@@ -1,0 +1,38 @@
+#include <iostream>
+using namespace std;
+unsigned long long ullpow(int b,int exp){ //由於pow return double 必須寫一個ullpow來用
+    unsigned long long ans=1;
+    unsigned long long B=(unsigned long long)b;
+    unsigned long long EXP=(unsigned long long)exp;
+    while(EXP){
+        if (EXP&1) 
+            ans*=B;
+        B*=B;
+        EXP>>=1;
+    }
+    return ans;
+}
+unsigned long long Ack(int m,int n){
+    if(m==0) 
+        return n+1;
+    if(m==1) 
+        return n+2;
+    if(m==2) 
+        return 2*n+3;
+    if(m==3)  
+        return ullpow(2,n+3)-3;
+    if(m==4) {
+        if(n== 0)
+          return 13; //A(4,0)=13
+        if(n==1)
+          return 65533; //A(4,1)=2^16-3=65533
+    }
+    if (m==5 && n==0)
+        return 65533; //A(5,0)=65533
+    return 0; //超過範圍或溢位
+}
+int main(){
+    int m,n;
+    while(cin>>m>>n)
+        cout<<Ack(m,n)<<'\n';
+}
