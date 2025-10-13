@@ -1,0 +1,33 @@
+#include <iostream>
+#include <string>
+using namespace std;
+void allsubset(const string &s, string now,int start,int sublen) {
+    if (now.length()==sublen){ //當滿足sublen長度(遞迴結束)
+        cout<<"{";
+        for(int i=0;i<now.length();++i){ //把整個now輸出
+            cout<<now[i];
+            if(i<now.length()-1) //如果還不是最後就輸出逗號
+                cout<<",";
+        }
+        cout << "}";
+        cout << ","; //這裡要注意最後一個集合會多一個逗號
+    }
+    for(int i=start;i<s.length();++i) 
+        allsubset(s,now+s[i],i+1,sublen); //遞迴組合生成
+}
+int main(){
+    string s; 
+    while(getline(cin,s)){
+        string Sets="";
+        for(char c:s) //迭代輸入字串
+            if(c!=' '&&c!='\t'&&c!='\r'&&c!='\n') //如果字元為有效
+                Sets+=c;
+        if (Sets.empty()) 
+            continue; //如果沒輸入就繼續    
+        cout << "{"; //初始左大括號
+        int len = Sets.length(); 
+        for (int i=0;i<=len;++i) //依照子集合小到大生成
+            allsubset(Sets,"",0,i); //now設為空
+        cout<<"\b}\n\n"; //最後輸出多的逗號刪掉 最後右大括號 換行
+    }
+}
