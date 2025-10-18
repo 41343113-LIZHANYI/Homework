@@ -136,8 +136,8 @@ int main(){
   * 時間複雜度：O(1) 或 O(log n),when m=3
   * 空間複雜度：O(1)
 #### (3) 子集合生成 — 遞迴
-  * 時間複雜度：O(n·2ⁿ)
-  * 空間複雜度：O(n)
+  * 時間複雜度：O(n·2ⁿ) //長度為n的集合，每次取或不取=2ⁿ，n為重建now字串
+  * 空間複雜度：O($n^2$) // 每層now都要複製，最多n層，每層now最長=n
 ## 測試與驗證
 
 ### 測試案例
@@ -299,12 +299,85 @@ int main(){
   
   陣列dp要有至少[5][65533]的大小。
 #### (2) Ackermann 函數 — 非遞迴
-  在當前程式直接使用查表法已經最佳無法再優化
+  在當前程式直接使用查表法已經最佳化，無法再優化
   * 時間複雜度在m=0,1,2為 $O(1)$
-  * 
+    
     時間複雜度在m=3為 $O(log(n))$ //二進制指數法
     
     時間複雜度在m=4,5為 $O(1)$ //極小範圍直接對應
   * 空間複雜度 總是 $O(1)$ //輸入不影響變數個數
+#### (3) 子集合生成 — 遞迴
+  ```c++
+    void allsubset(const string &s, string now,int start,int sublen) {
+      if (now.length()==sublen){ //當滿足sublen長度(遞迴結束)
+          cout<<"{";
+          for(int i=0;i<now.length();++i){ //把整個now輸出
+              cout<<now[i];
+              if(i<now.length()-1) //如果還不是最後就輸出逗號
+                  cout<<",";
+          }
+          cout << "}";
+          cout << ","; //這裡要注意最後一個集合會多一個逗號
+      }
+      for(int i=start;i<s.length();++i) 
+          allsubset(s,now+s[i],i+1,sublen); //遞迴組合生成
+  }
+  ```
+  在原先的程式沒有return導致遞迴滿足元素要求個數，仍然會執行直到集合尾端。
 
+  原程式string now使用傳參考導致每一次呼叫都要複製一個now+s[i]
 
+  這裡我們改成string &now傳參考
+  
+  因為now相同所以操作會互相干擾
+  
+  我們使用now.pop_back(); 來主動回溯
+  
+  並使用now.push_back(s[i]);替代掉now+=s[i]; 
+
+  雖然效率相同
+  
+  但使新增單一元素的操作和模擬堆疊更加的直觀
+  ``` c++
+  #include <iostream>
+  #include <string>
+  using namespace std;
+  void allsubset(const string &s, string &now,int start,int sublen) { //now傳參考
+      if (now.length()==sublen){ 
+          cout<<"{";
+          for(int i=0;i<now.length();++i){ 
+              cout<<now[i];
+              if(i<now.length()-1) 
+                  cout<<",";
+          }
+          cout << "}";
+          cout << ","; 
+          return; //如果達成元素個數要求直接中止返回
+      }
+      for(int i=start;i<s.length();++i){
+          now.push_back(s[i]);
+          allsubset(s,now,i+1,sublen);
+          now.pop_back(); 
+      }
+  }
+  int main(){
+      string s; 
+      while(getline(cin,s)){
+          string Sets="";
+          for(char c:s) 
+              if(c!=' '&&c!='\t'&&c!='\r'&&c!='\n') 
+                  Sets+=c;
+          if (Sets.empty()) 
+              continue; 
+          cout << "{"; 
+          int len = Sets.length(); 
+          string now; //傳參考字串now
+          for (int i=0;i<=len;++i) 
+              allsubset(Sets,now,0,i); //改為變數now
+          cout<<"\b}\n\n"; 
+      }
+  }
+  ```
+  * 時間複雜度從O(n·2ⁿ)->O(2ⁿ)
+  * 空間複雜度從O($n^2$)->O(n)
+  都少了原本now的開銷
