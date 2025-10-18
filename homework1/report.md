@@ -342,7 +342,7 @@ int main(){
   #include <iostream>
   #include <string>
   using namespace std;
-  void allsubset(const string &s, string &now,int start,int sublen) { //now傳參考
+  void allsubset(const string &s,string &now,int start,int sublen) { //now傳參考
       if (now.length()==sublen){ 
           cout<<"{";
           for(int i=0;i<now.length();++i){ 
@@ -350,8 +350,8 @@ int main(){
               if(i<now.length()-1) 
                   cout<<",";
           }
-          cout << "}";
-          cout << ","; 
+          cout<<"}";
+          cout<<","; 
           return; //如果達成元素個數要求直接中止返回
       }
       for(int i=start;i<s.length();++i){
@@ -369,8 +369,8 @@ int main(){
                   Sets+=c;
           if (Sets.empty()) 
               continue; 
-          cout << "{"; 
-          int len = Sets.length(); 
+          cout<<"{"; 
+          int len=Sets.length(); 
           string now; //傳參考字串now
           for (int i=0;i<=len;++i) 
               allsubset(Sets,now,0,i); //改為變數now
