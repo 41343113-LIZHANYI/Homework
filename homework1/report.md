@@ -323,6 +323,7 @@ int main(){
           allsubset(s,now+s[i],i+1,sublen); //遞迴組合生成
   }
   ```
+##### [優化部分]
   在原先的程式沒有return導致遞迴滿足元素要求個數，仍然會執行直到集合尾端。
 
   原程式string now使用傳參考導致每一次呼叫都要複製一個now+s[i]
