@@ -244,7 +244,7 @@ int main(){
 輸出格式需刪除多餘逗號，保持輸出格式正確
 ### 程式改進
 對以上三個程式做後續延伸和改進
-####(1) Ackermann 函數 — 遞迴
+#### (1) Ackermann 函數 — 遞迴
 ```c++
 #include <iostream>
 using namespace std;
