@@ -3,6 +3,8 @@
 作業二
 
 ## 解題說明
+實作Polynomial的類別
+
 以下為題目要求:
 * 建構Polynomial物件的建構子
 * 將Polynomial物件相加並回傳一個Polynomial物件的Add成員函式
