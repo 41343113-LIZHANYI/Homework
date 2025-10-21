@@ -10,6 +10,7 @@
 * 將Polynomial物件相加並回傳一個Polynomial物件的Add成員函式
 * 將Polynomial物件相乘並回傳一個Polynomial物件的Mult成員函式
 * 將Polynomial物件帶入x值並回傳結果值的Eval成員函式
+* 實作Polynomial的輸入和輸出的運算子重載
 ### 問題描述
 ### 解題策略
 
