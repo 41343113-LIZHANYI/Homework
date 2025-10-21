@@ -1,16 +1,14 @@
 # 41343113
 
-作業一
+作業二
 
 ## 解題說明
+以下為題目要求:
+* 建構Polynomial物件的建構子
+* 將Polynomial物件相加並回傳一個Polynomial物件的Add成員函式
+* 將Polynomial物件相乘並回傳一個Polynomial物件的Mult成員函式
+* 將Polynomial物件帶入x值並回傳結果值的Eval成員函式
 ### 問題描述
-* **Problem 1:** 實作遞迴與非遞迴的 Ackermann 函數。
-  |函數定義|條件|
-  |:---:|:---:|
-  | $A(m, n) = n + 1$|**$m=0$**|
-  |$A(m,n)=A(m-1,1)$|**$n=0$**|
-  |$A(m,n)=A(m-1,A(m,n-1))$|**$otherwise$**|
-* **Problem 2:** 實作遞迴生成集合的所有子集合。
 ### 解題策略
 
 #### (1) Ackermann 函數 — 遞迴
