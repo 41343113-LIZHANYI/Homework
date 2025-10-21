@@ -3,6 +3,7 @@
 作業二
 
 ## 解題說明
+### 問題描述
 實作Polynomial的類別
 
 以下為題目要求:
@@ -11,28 +12,8 @@
 * 將Polynomial物件相乘並回傳一個Polynomial物件的Mult成員函式
 * 將Polynomial物件帶入x值並回傳結果值的Eval成員函式
 * 實作Polynomial的輸入和輸出的運算子重載
-### 問題描述
 ### 解題策略
-
-#### (1) Ackermann 函數 — 遞迴
-  - 由於輸出的增長速度超級快 使用unsigned long long
-  - 當m=0時返回n+1作為遞迴結束條件
-  - 主程式呼叫遞迴函式，並輸出遞迴回傳數值
-#### (2) Ackermann 函數 — 非遞迴
-  - 由於輸出的增長速度超級快 使用unsigned long long
-  - 已知Ackmann m 的規則
-    - when m=0 Ackmann(m,n)= $n+1$ 
-    - when m=1 Ackmann(m,n)= $n+2$
-    - when m=2 Ackmann(m,n)= $2n+3$
-    - when m=3 Ackmann(m,n)= $2^{n+3}-3$
-    - when m=4 Ackmann(m,n)= $2↑↑(n+3)-3$ (超指數成長)
-  - when (m>5) or (m=5 and n>0) or (m=4 and n>1) unsigned long long 必定溢位 [參考Ackmann wiki](https://en.wikipedia.org/wiki/Ackermann_function)
-  - <img width="1518" height="760" alt="image" src="https://github.com/user-attachments/assets/98d7c9fb-8f8b-4a6e-b5d5-f3ee4499a685" />
-
-#### (3) 子集合生成 — 遞迴
-  - 用回溯法來生成特定長度的組合
-  - 當前字串達到特定長度作為遞迴的結束條件
-  - 在主程式for(int i=0;i<=len;++i)依次呼叫遞迴函式使子集合由小到大生成
+  
 ## 程式實作
 以下為主要程式碼：
 #### (1) Ackermann 函數 — 遞迴
