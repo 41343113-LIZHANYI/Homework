@@ -13,7 +13,13 @@
 * 將Polynomial物件帶入x值並回傳結果值的Eval成員函式
 * 實作Polynomial的輸入和輸出的運算子重載
 ### 解題策略
-  
+1. Polynomial()建構子
+   * 根據註解 //Construct the polynomial p(x)=0
+   * 因為 termArray 和 terms 都須為非零項，因此將指標指向nullptr，capacity和terms都設為0;
+3. Add成員函式
+4. Mult成員函式
+5. Eval成員函式
+6. 輸入和輸出的運算子重載
 ## 程式實作
 以下為主要程式碼：
 #### (1) Ackermann 函數 — 遞迴
