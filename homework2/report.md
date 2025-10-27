@@ -15,11 +15,16 @@
 ### 解題策略
 1. Polynomial()建構子
    * 根據註解 //Construct the polynomial p(x)=0
-   * 因為 termArray 和 terms 都須為非零項，因此將指標指向nullptr，capacity和terms都設為0;
-3. Add成員函式
-4. Mult成員函式
-5. Eval成員函式
-6. 輸入和輸出的運算子重載
+   * 根據註解提示 termArray 和 terms 都須為非零項，因此將指標指向nullptr，capacity和terms都設為0;
+2. Add成員函式
+   * 我們假設三個Polynomial A,B,C(被加多項式、加多項式、新多項式)
+   * 我們需要遍歷A和B，並不斷比較A和B誰指數較大，因此會有三種情況(A大、B大、相等)
+
+     由此決定如何去移動數值到新多項式C
+   * 在相等的情況還要考慮到A+B的係數是否為0
+3. Mult成員函式
+4. Eval成員函式
+5. 輸入和輸出的運算子重載
 ## 程式實作
 以下為主要程式碼：
 #### (1) Ackermann 函數 — 遞迴
