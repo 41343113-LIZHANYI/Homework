@@ -13,20 +13,32 @@
 * 將Polynomial物件帶入x值並回傳結果值的Eval成員函式
 * 實作Polynomial的輸入和輸出的運算子重載
 ### 解題策略
+非題目要求必要含式:
+
+newTerm()成員含式
+   * 雖然題目沒有要求，但其他含式的操作總是需要新增項次在新Array後，所以我們新增newTerm()來做輔助
+   * term可以直接作為索引來新增項次到Array後
+   * term和capcity比較可以得知新增項次會不會超出陣列
+   
+     再動態配置記憶體來擴增大小
+~Polynomial()解構子
+   * Mult()時temp和c會嘗試釋放同個記憶體導致崩潰
+   * <img width="797" height="363" alt="image" src="https://github.com/user-attachments/assets/413a5bc7-e8be-49dc-aacc-3604a4551c98" />
+
 1. Polynomial()建構子
    * 根據註解 //Construct the polynomial p(x)=0
    * 根據註解提示 termArray 和 terms 都須為非零項，因此將指標指向nullptr，capacity和terms都設為0;
-2. Add成員函式
+2. Add()成員函式
    * 我們假設三個Polynomial A,B,C(被加多項式、加多項式、新多項式)
    * 我們需要遍歷A和B，並不斷比較A和B誰指數較大，因此會有三種情況(A大、B大、相等)
 
      由此決定如何去移動數值到新多項式C
    * 在相等的情況還要考慮到A+B的係數是否為0
-3. Mult成員函式
+3. Mult()成員函式
    * 乘法產生的**項次並不按照順序**，因此要做**排序**以及**合併**的操作
    * 需要臨時的陣列存放亂序的項次
    * 乘完的項次要考慮加起來時是否為0
-4. Eval成員函式
+4. Eval()成員函式
    * 遍歷整個多項式，使用pow來累加回傳
 5. 輸入運算子重載
    * 輸入格式為先輸入項次數，然後依序輸入係數和指數
