@@ -216,15 +216,22 @@ int main() {
   * 空間複雜度：O(n) //雖然只有swap，但整體因複製建構子仍為O(n)
 #### (5) void newTerm(float c, int e) 項次新增含式
   * 時間複雜度：O(n) or O(1) //如果空間足夠O(1)，否則須重分配空間觸發copy含式O(n)
-  * 空間複雜度：O(n) or O(1) //同理，不夠時重分配O(2n)複製O(n)
+  * 空間複雜度：O(n) or O(1) //同理，不夠時重分配O(n)
 #### (6) Polynomial Add(Polynomial poly) 多項式相加含式
   * 時間複雜度：O(m+n) //假設A項次=m B項次=n for迴圈各遍歷一次
-  * 空間複雜度：O(m+n) //最多相加m+n項至C多項式 
+  * 空間複雜度：O(m+n) //最多m+n項至C多項式 
 #### (7) Polynomial Mult(Polynomial poly) 多項式相乘含式
-#### (8) float Eval(float f) x帶入含式
+  * 時間複雜度：O(mxn) //雙層for迴圈，外層m次，內層n次
+  * 空間複雜度：O(mxn) //項次最多mxn項
+#### (8) float Eval(float f) 數值帶入x含式
+  * 時間複雜度：O(n) //單層for遍歷項次
+  * 空間複雜度：O(1) //固定變數不受輸入引響
 #### (9) istream& operator>>(istream& is, Polynomial& poly) 輸入運算子重載
+  * 時間複雜度：O(n) //單層while，受輸入引響O(n)
+  * 空間複雜度：O(n) //newTerm至poly最大O(n)
 #### (10) ostream& operator<<(ostream& os, const Polynomial& poly) 輸出運算子重載
-
+  * 時間複雜度：O(n) //for遍歷產生輸出
+  * 空間複雜度：O(1) //固定變數不受輸入引響
 ### 測試案例
 
 #### (1) Ackermann 函數 — 遞迴
