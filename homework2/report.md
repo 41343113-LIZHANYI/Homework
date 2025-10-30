@@ -21,10 +21,15 @@ newTerm()成員含式
    * term和capcity比較可以得知新增項次會不會超出陣列
    
      再動態配置記憶體來擴增大小
+
+~Polynomial()解構子
+   * 讓類別在生命周期結束時可以釋放記憶體空間
      
 Polynomial(const Polynomial &copy)複製建構子
-   * 
+   * 讓複製時可以重新建立空間，不讓指標指向同個空間，導致重複的記憶體釋放
 
+Polynomial& operator=(Polynomial copy)賦值運算子重載
+   * Mult有使用已建構的物件做累加動作c=c.Add(temp)因此需要附值運算子重載
 
 1. Polynomial()建構子
    * 根據註解 //Construct the polynomial p(x)=0
