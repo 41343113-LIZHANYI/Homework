@@ -21,9 +21,10 @@ newTerm()成員含式
    * term和capcity比較可以得知新增項次會不會超出陣列
    
      再動態配置記憶體來擴增大小
-~Polynomial()解構子
-   * Mult()時temp和c會嘗試釋放同個記憶體導致崩潰
-   * <img width="797" height="363" alt="image" src="https://github.com/user-attachments/assets/413a5bc7-e8be-49dc-aacc-3604a4551c98" />
+     
+Polynomial(const Polynomial &copy)複製建構子
+   * 
+
 
 1. Polynomial()建構子
    * 根據註解 //Construct the polynomial p(x)=0
@@ -83,17 +84,17 @@ Polynomial::Polynomial(){//建構子
         capacity=0;
         terms=0;
 }
-Polynomial::Polynomial(const Polynomial &poly) {
-    terms=poly.terms;
-    capacity=poly.capacity;
-    termArray=new Term[capacity];
+Polynomial::Polynomial(const Polynomial &copy) {
+    terms=copy.terms;
+    capacity=copy.capacity;
+    termArray=new Term[capacity]; //分配新空間，避免兩個都指向同個空間 
     for (int i=0;i<terms;++i)
-        termArray[i]=poly.termArray[i];
+        termArray[i]=copy.termArray[i]; //逐一複製 
 }
-Polynomial& Polynomial::operator=(Polynomial copy){
-    std::swap(termArray, copy.termArray);
-    std::swap(capacity, copy.capacity);
-    std::swap(terms, copy.terms);
+Polynomial& Polynomial::operator=(Polynomial copy){ // 已建構的物件 賦值運算子重載  
+    swap(termArray,copy.termArray); //直接swap(複製建構子動態配置的新空間 ) 
+    swap(capacity,copy.capacity);  
+    swap(terms,copy.terms);  
     return *this;
 }
 void Polynomial::newTerm(float c,int e){
@@ -194,7 +195,6 @@ int main() {
 	cout<<B.Eval(x)<<'\n';
     return 0;
 }
-
 ```
 ## 效能分析
 #### (1) Ackermann 函數 — 遞迴
