@@ -48,99 +48,153 @@ newTerm()成員含式
    * 需判斷是否為第一項以及係數是否大於0來決定是否加"+"
 ## 程式實作
 以下為主要程式碼：
-#### (1) Ackermann 函數 — 遞迴
 ``` c++
 #include <iostream>
+#include <cmath>
+#include <algorithm>
 using namespace std;
-unsigned long long Ack(unsigned long long m,unsigned long long n){
-    if(m==0)
-        return n+1; //遞迴結束條件
-    if(n==0)
-        return Ack(m-1,1);
-    return Ack(m-1,Ack(m,n-1));
+class Polynomial; 
+class Term {
+    friend Polynomial;
+    friend ostream& operator<<(ostream& os,const Polynomial& poly);
+private:
+    float coef; //係數
+    int exp; //指數
+};
+class Polynomial {
+private:
+    Term *termArray; //指標指向陣列空間 
+    int capacity; //陣列大小 
+    int terms; //非零項數量
+public:
+    Polynomial();                  
+    Polynomial(const Polynomial &copy);
+    Polynomial& operator=(Polynomial copy);
+	~Polynomial(){delete[] termArray;}
+    Polynomial Add(Polynomial poly); 
+    Polynomial Mult(Polynomial poly); 
+    float Eval(float f);
+    void newTerm(float c,int e);
+    friend istream& operator>>(istream& is,Polynomial& poly);
+    friend ostream& operator<<(ostream& os,const Polynomial& poly);
+};
+Polynomial::Polynomial(){//建構子
+        termArray=NULL;   //p(x)=0的要求 
+        capacity=0;
+        terms=0;
 }
-int main(){
-    int m,n;
-    while(cin>>m>>n)
-        cout<<Ack(m,n)<<'\n';
+Polynomial::Polynomial(const Polynomial &poly) {
+    terms=poly.terms;
+    capacity=poly.capacity;
+    termArray=new Term[capacity];
+    for (int i=0;i<terms;++i)
+        termArray[i]=poly.termArray[i];
 }
-```
-#### (2) Ackermann 函數 — 非遞迴
-``` c++
-#include <iostream>
-using namespace std;
-unsigned long long ullpow(int b,int exp){ //由於pow return double 必須寫一個ullpow來用
-    unsigned long long ans=1;
-    unsigned long long B=(unsigned long long)b;
-    unsigned long long EXP=(unsigned long long)exp;
-    while(EXP){
-        if (EXP&1) 
-            ans*=B;
-        B*=B;
-        EXP>>=1;
+Polynomial& Polynomial::operator=(Polynomial copy){
+    std::swap(termArray, copy.termArray);
+    std::swap(capacity, copy.capacity);
+    std::swap(terms, copy.terms);
+    return *this;
+}
+void Polynomial::newTerm(float c,int e){
+    if(c==0) 
+		return;
+    if(terms==capacity){//如果空間不夠 
+    	if(capacity)
+        	capacity*=2; //預設capacity*2
+        else
+        	capacity=1; //避免剛建構capacity=0 
+        Term *temp=new Term[capacity]; //動態配置新空間 
+        copy(termArray,termArray+terms,temp); //複製 
+        delete []termArray; //刪掉舊空間 
+        termArray=temp; //指向新空間 
     }
-    return ans;
+    termArray[terms].coef=c; //加入c,e到最後 
+    termArray[terms++].exp=e;
 }
-unsigned long long Ack(int m,int n){
-    if(m==0) 
-        return n+1;
-    if(m==1) 
-        return n+2;
-    if(m==2) 
-        return 2*n+3;
-    if(m==3)  
-        return ullpow(2,n+3)-3;
-    if(m==4) {
-        if(n== 0)
-          return 13; //A(4,0)=13
-        if(n==1)
-          return 65533; //A(4,1)=2^16-3=65533
-    }
-    if (m==5 && n==0)
-        return 65533; //A(5,0)=65533
-    return 0; //超過範圍或溢位
-}
-int main(){
-    int m,n;
-    while(cin>>m>>n)
-        cout<<Ack(m,n)<<'\n';
-}
-```
-#### (3) 子集合生成 — 遞迴
-```c++
-#include <iostream>
-#include <string>
-using namespace std;
-void allsubset(const string &s, string now,int start,int sublen) {
-    if (now.length()==sublen){ //當滿足sublen長度(遞迴結束)
-        cout<<"{";
-        for(int i=0;i<now.length();++i){ //把整個now輸出
-            cout<<now[i];
-            if(i<now.length()-1) //如果還不是最後就輸出逗號
-                cout<<",";
+Polynomial Polynomial::Add(Polynomial poly){
+    Polynomial c; //新Array c 
+    int aPos = 0, bPos = 0; //a和b的索引 
+    while(aPos<terms && bPos<poly.terms){ //直到a或b遍歷完 
+        if(termArray[aPos].exp==poly.termArray[bPos].exp){ //a和b指數相等  
+            float sum=termArray[aPos].coef+poly.termArray[bPos].coef;
+            if(sum)//判斷項次相加係數是否為0 
+                c.newTerm(sum,termArray[aPos].exp);//新增到c 
+            aPos++; //a,b的項次都新增到c,a和b索引++ 
+			bPos++;
+        } 
+        else if(termArray[aPos].exp>poly.termArray[bPos].exp){ //a指數比較大   
+            c.newTerm(termArray[aPos].coef,termArray[aPos].exp);//新增到c 
+            aPos++; //a項次新增到c,a索引++ 
+        } 
+        else{  //b指數比較大 
+            c.newTerm(poly.termArray[bPos].coef,poly.termArray[bPos].exp);//新增到c 
+            bPos++; //b項次新增到c,b索引++  
         }
-        cout << "}";
-        cout << ","; //這裡要注意最後一個集合會多一個逗號
     }
-    for(int i=start;i<s.length();++i) 
-        allsubset(s,now+s[i],i+1,sublen); //遞迴組合生成
+    //把a或b沒遍歷完的放到c 
+    for (;aPos<terms;aPos++)
+        c.newTerm(termArray[aPos].coef,termArray[aPos].exp);
+    for (;bPos<poly.terms;bPos++)
+        c.newTerm(poly.termArray[bPos].coef,poly.termArray[bPos].exp);
+    return c;
 }
-int main(){
-    string s; 
-    while(getline(cin,s)){
-        string Sets="";
-        for(char c:s) //迭代輸入字串
-            if(c!=' '&&c!='\t'&&c!='\r'&&c!='\n') //如果字元為有效
-                Sets+=c;
-        if (Sets.empty()) 
-            continue; //如果沒輸入就繼續    
-        cout << "{"; //初始左大括號
-        int len = Sets.length(); 
-        for (int i=0;i<=len;++i) //依照子集合小到大生成
-            allsubset(Sets,"",0,i); //now設為空
-        cout<<"\b}\n\n"; //最後輸出多的逗號刪掉 最後右大括號 換行
+Polynomial Polynomial::Mult(Polynomial poly){
+    Polynomial c; //新Array c 
+    for (int i=0;i<terms;++i){ //i遍歷a項次 
+        Polynomial temp; //臨時Array temp 
+        for (int j=0;j<poly.terms;++j){ //j遍歷b項次 
+            float newC=termArray[i].coef*poly.termArray[j].coef; //a*b項次係數 
+            int newE=termArray[i].exp+poly.termArray[j].exp; //a*b項次指數 
+            temp.newTerm(newC,newE); //項次加到temp後 
+        }
+        c=c.Add(temp); // 用Add()把每次算出來的temp相加 
     }
+    return c;
 }
+float Polynomial::Eval(float f){ //將值帶入x做多項式運算 
+    float sum=0;
+    for(int i=0;i<terms;++i)
+        sum+=termArray[i].coef*pow(f,termArray[i].exp);//sum用pow累加 
+    return sum;
+}
+istream& operator>>(istream& is,Polynomial& poly){
+    float coef;
+    int exp,n;
+    is>>n;
+    while(n--){
+        is>>coef>>exp;
+        poly.newTerm(coef,exp);
+    }
+    return is;
+}
+ostream& operator<<(ostream& os,const Polynomial& poly){
+	if(poly.terms==0){ //如果是0直接return0 
+        os<<"0";
+        return os;
+    }
+    for (int i=0;i<poly.terms;++i) {
+        if(i>0&&poly.termArray[i].coef>0)//不是第一個輸出項次且係數不為負數 
+			os<<"+";
+        os<<poly.termArray[i].coef<<"X^"<< poly.termArray[i].exp;
+    }
+    return os;
+}
+int main() {
+    Polynomial A,B;
+    float x;
+    cin>>A;
+    cin>>B;
+    cin>>x;
+    cout<<A<<'\n';
+    cout<<B<<'\n';
+    cout<<A.Add(B)<<'\n';
+    cout<<A.Mult(B)<<'\n';
+    cout<<A.Eval(x)<<'\n';
+	cout<<B.Eval(x)<<'\n';
+    return 0;
+}
+
 ```
 ## 效能分析
 #### (1) Ackermann 函數 — 遞迴
