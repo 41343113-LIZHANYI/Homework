@@ -383,3 +383,71 @@ int main() {
 
 * 處理係數正負號與第一項"+"
 * 空多項式應輸出0
+
+### 程式改進
+對以上三個成員含式Add() & Mult() & Eval() 做改進
+### Add()-直接一次分配完空間和完全避免使用newTerm()
+```c++
+Polynomial Polynomial::Add(const Polynomial &poly){
+    Polynomial c;
+    c.capacity=terms+poly.terms; //預判最多項次的可能m+n
+    c.termArray=new Term[c.capacity]; //為新多項式動態規劃
+    int aPos=0,bPos=0;
+    while(aPos<terms&&bPos<poly.terms){
+        if(termArray[aPos].exp==poly.termArray[bPos].exp){
+            float sum=termArray[aPos].coef+poly.termArray[bPos].coef;
+            if(sum)
+                c.termArray[c.terms++]={sum,termArray[aPos].exp}; //這裡都使用terms做索引新增，避免newTerm()呼叫
+            aPos++;
+			bPos++;
+        }else if(termArray[aPos].exp>poly.termArray[bPos].exp){
+            c.termArray[c.terms++]=termArray[aPos++];
+        }else{
+            c.termArray[c.terms++]=poly.termArray[bPos++];
+        }
+    }
+    while(aPos<terms)//改用while
+        c.termArray[c.terms++]=termArray[aPos++];
+    while(bPos<poly.terms)
+        c.termArray[c.terms++]=poly.termArray[bPos++];
+    return c;
+}
+```
+### Mult()-一次分配完空間和完全避免掉呼叫Add()和臨時多項式temp
+```c++
+Polynomial Polynomial::Mult(const Polynomial &poly){
+    if(terms==0||poly.terms==0)
+		return Polynomial();//return f(x)=0
+    int maxCap=terms*poly.terms;//預判最多項次可能 mxn
+    Polynomial c;
+    c.capacity=maxCap;
+    c.termArray=new Term[maxCap];
+    for(int i=0;i<terms;++i){
+        for(int j=0;j<poly.terms;++j){
+            float newC=termArray[i].coef*poly.termArray[j].coef;
+            int newE=termArray[i].exp+poly.termArray[j].exp;
+            bool found=false; //flag
+            for(int k=0;k<c.terms;++k){ //每次都遍歷是否有相同指數
+                if(c.termArray[k].exp==newE){
+                    c.termArray[k].coef+=newC; //如果有相加
+                    found=true;
+                    break;
+                }
+            }
+            if(!found&&newC!=0)
+                c.termArray[c.terms++]={newC,newE};
+        }
+    }
+    return c;
+}
+```
+### Mult()-改用霍納法則
+```c++
+float Polynomial::Eval(float f){
+    float res=0;
+    for(int i=0;i<terms;++i){
+        res=res*f+termArray[i].coef;//霍納法則
+    }
+    return res;
+}
+```
