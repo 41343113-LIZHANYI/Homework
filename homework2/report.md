@@ -202,16 +202,28 @@ int main() {
 }
 ```
 ## 效能分析
-#### (1) Ackermann 函數 — 遞迴
-  * 時間複雜度：O(A(m,n))
-  * 空間複雜度：O(A(m,n))
-#### (2) Ackermann 函數 — 非遞迴
-  * 時間複雜度：O(1) 或 O(log n),when m=3
-  * 空間複雜度：O(1)
-#### (3) 子集合生成 — 遞迴
-  * 時間複雜度：O(n·2ⁿ) //長度為n的集合，每次取或不取=2ⁿ，n為重建now字串
-  * 空間複雜度：O($n^2$) // 每層now都要複製，最多n層，每層now最長=n
-## 測試與驗證
+#### (1) Polynomial() 建構子
+  * 時間複雜度：O(1) //僅初始化termArray、capacity、terms，與輸入無關
+  * 空間複雜度：O(1) 
+#### (2) ~Polynomial() 解構子
+  * 時間複雜度：O(1) //僅執行delete[]釋放記憶體，與輸入無關
+  * 空間複雜度：O(1) 
+#### (3) Polynomial(const Polynomial &copy) 複製建構子
+  * 時間複雜度：O(n) //單層for迴圈複製n次
+  * 空間複雜度：O(n) //new Term[capacity]分配新空間n大小
+#### (4) Polynomial& operator=(Polynomial copy) 賦值運算子重載
+  * 時間複雜度：O(n) //參數&copy在呼叫時會觸發複製建構子O(n)
+  * 空間複雜度：O(n) //雖然只有swap，但整體因複製建構子仍為O(n)
+#### (5) void newTerm(float c, int e) 項次新增含式
+  * 時間複雜度：O(n) or O(1) //如果空間足夠O(1)，否則須重分配空間觸發copy含式O(n)
+  * 空間複雜度：O(n) or O(1) //同理，不夠時重分配O(2n)複製O(n)
+#### (6) Polynomial Add(Polynomial poly) 多項式相加含式
+  * 時間複雜度：O(m+n) //假設A項次=m B項次=n for迴圈各遍歷一次
+  * 空間複雜度：O(m+n) //最多相加m+n項至C多項式 
+#### (7) Polynomial Mult(Polynomial poly) 多項式相乘含式
+#### (8) float Eval(float f) x帶入含式
+#### (9) istream& operator>>(istream& is, Polynomial& poly) 輸入運算子重載
+#### (10) ostream& operator<<(ostream& os, const Polynomial& poly) 輸出運算子重載
 
 ### 測試案例
 
