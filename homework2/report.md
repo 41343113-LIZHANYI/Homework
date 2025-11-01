@@ -385,8 +385,8 @@ int main() {
 * 空多項式應輸出0
 
 ### 程式改進
-對以上三個成員含式Add() & Mult() & Eval() 做改進
-### Add()-直接一次分配完空間和完全避免使用newTerm()
+* 對以上三個成員含式Add() & Mult() & Eval() 做改進
+#### Add()-直接一次分配完空間和完全避免後續使用newTerm()
 ```c++
 Polynomial Polynomial::Add(const Polynomial &poly){
     Polynomial c;
@@ -413,7 +413,31 @@ Polynomial Polynomial::Add(const Polynomial &poly){
     return c;
 }
 ```
-### Mult()-一次分配完空間和完全避免掉呼叫Add()和臨時多項式temp
+#### [原有問題]
+* 每新增一項次都要呼叫newTerm()，要不斷檢查容量、重分配記憶體導致額外成本
+* 多次newTerm()需要多次記憶體存取、複製
+#### [優化部分]
+1.一次性分配空間
+```c++
+c.capacity=terms+poly.terms;
+c.termArray=new Term[c.capacity];
+```
+避免不斷分配空間
+
+2.利用索引插入項次
+```c++
+c.termArray[c.terms++] = {sum, exp};
+```
+完全避免後續使用newTerm()，不會有額外的函式呼叫
+
+3.改用while新增剩餘項至新空間
+
+讓程式看起來更整潔
+
+結論:
+* 時間複雜度常數降低
+* 動態記憶體分配次數從多次降為1次
+#### Mult()-一次分配完空間和完全避免後續呼叫newTerm() & 避免使用Add()和臨時多項式temp
 ```c++
 Polynomial Polynomial::Mult(const Polynomial &poly){
     if(terms==0||poly.terms==0)
@@ -441,13 +465,51 @@ Polynomial Polynomial::Mult(const Polynomial &poly){
     return c;
 }
 ```
-### Mult()-改用霍納法則
+#### [原有問題]
+* 乘法都要建立一個臨時多項式temp再用Add()累加，浪費時間與空間
+#### [優化部分]
+1.一次性分配空間
+```c++
+c.capacity = terms * poly.terms;
+c.termArray = new Term[c.capacity];
+```
+避免不斷分配空間
+
+2.就地合併同次方項
+```c++
+for(int k=0;k<c.terms;++k){
+	if(c.termArray[k].exp == newE){
+		c.termArray[k].coef += newC;
+		found = true;
+		break;
+	}
+}
+if(!found && newC != 0)
+	c.termArray[c.terms++] = {newC, newE};
+```
+完全避免使用newTerm() & Add()，不會有額外的函式呼叫，也不會多新增temp多項式
+
+結論:
+* 避免兩個成員含式呼叫，降低時間複雜度
+* 避免建構temp多項式，降低空間複雜度
+#### Mult()-改用霍納法則
 ```c++
 float Polynomial::Eval(float f){
-    float res=0;
-    for(int i=0;i<terms;++i){
-        res=res*f+termArray[i].coef;//霍納法則
-    }
-    return res;
+	float res=0;
+	for(int i=0;i<terms;++i){
+		res=res*f+termArray[i].coef;//霍納法則
+	}
+	return res;
 }
 ```
+#### [原有問題]
+* 每個項次都呼叫pow()重複計算次方，成本高
+
+#### [優化部分]
+
+程式使用霍納法則的多項式算法(下圖)
+<img width="1218" height="160" alt="image" src="https://github.com/user-attachments/assets/98ab414a-4d64-4b4d-b7ef-b4ec72d9092f" />
+
+結論:
+* 將原本時間複雜度O(n^2)降為O(n)
+* 完全避免pow()執行時間大幅減少
