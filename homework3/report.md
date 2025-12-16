@@ -4,9 +4,9 @@
 
 ## 解題說明
 ### 問題描述
-使用帶 header 節點的環狀鏈結串列，每個節點都含有以下
+使用帶 header 節點的環狀鏈結串列，每個節點都含有以下三個資料(coef,exp,link)
 
-三個資料(coef,exp,link)來實作Polynomial類別
+來實作Polynomial類別
 
 以下為題目要求:
 * (a) 輸入運算子多載
