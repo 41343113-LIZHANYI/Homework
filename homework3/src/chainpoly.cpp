@@ -11,9 +11,10 @@ class Term {
     friend ostream& operator<<(ostream& os, const Polynomial& poly);
     friend istream& operator>>(istream& is, Polynomial& poly);
     friend class Chain<Term>; 
-public:
+private:
     float coef; //係數
     int exp;    //指數
+public:
     Term(float c=0,int e=0):coef(c),exp(e){}
     bool operator!=(const Term& other) const { return exp != other.exp; }// 為了讓ChainNode可以賦值預設值
 };
