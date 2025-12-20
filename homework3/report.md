@@ -27,45 +27,22 @@
 5. 實作 Available Lists
 
 ### 解題策略
-非題目要求必要含式:
-
-newTerm()成員含式
-   * 雖然題目沒有要求，但其他含式的操作總是需要新增項次在新Array後，所以我們新增newTerm()來做輔助
-   * term可以直接作為索引來新增項次到Array後
-   * term和capcity比較可以得知新增項次會不會超出陣列
-   
-     再動態配置記憶體來擴增大小
-
-~Polynomial()解構子
-   * 讓類別在生命周期結束時可以釋放記憶體空間
-     
-Polynomial(const Polynomial &copy)複製建構子
-   * 讓複製時可以重新建立空間，不讓指標指向同個空間，導致重複的記憶體釋放
-
-Polynomial& operator=(Polynomial copy)賦值運算子重載
-   * Mult有使用已建構的物件做累加動作c=c.Add(temp)因此需要附值運算子重載
-
-1. Polynomial()建構子
-   * 根據註解 //Construct the polynomial p(x)=0
-   * 根據註解提示 termArray 和 terms 都須為非零項，因此將指標指向nullptr，capacity和terms都設為0;
-2. Add()成員函式
-   * 我們假設三個Polynomial A,B,C(被加多項式、加多項式、新多項式)
-   * 我們需要遍歷A和B，並不斷比較A和B誰指數較大，因此會有三種情況(A大、B大、相等)
-
-     由此決定如何去移動數值到新多項式C
-   * 在相等的情況還要考慮到A+B的係數是否為0
-3. Mult()成員函式
-   * 乘法產生的**項次並不按照順序**，因此要做**排序**以及**合併**的操作
-   * 需要臨時的陣列存放亂序的項次
-   * 乘完的項次要考慮加起來時是否為0
-4. Eval()成員函式
-   * 遍歷整個多項式，使用pow來累加回傳
-5. 輸入運算子重載
-   * 輸入格式為先輸入項次數，然後依序輸入係數和指數
-   * 先cin一個n然後for n次依次讀入係數指數
-6. 輸出的運算子重載
-   * 格式為：係數X^指數 + ......
-   * 需判斷是否為第一項以及係數是否大於0來決定是否加"+"
+* Term類別
+  
+  作為項次類別需要coef係數和exp指數資料成員
+  1. 
+* ChainNode類別
+  * 資料成員
+  * 成員含式
+* AvailableList類別
+  * 資料成員
+  * 成員含式
+* ChainIterator類別
+  * 資料成員
+  * 成員含式
+* Chain類別
+  * 資料成員
+  * 成員含式
 ## 程式實作
 以下為主要程式碼：
 ``` c++
@@ -82,9 +59,10 @@ class Term {
     friend ostream& operator<<(ostream& os, const Polynomial& poly);
     friend istream& operator>>(istream& is, Polynomial& poly);
     friend class Chain<Term>; 
-public:
+private:
     float coef; //係數
     int exp;    //指數
+public:
     Term(float c=0,int e=0):coef(c),exp(e){}
     bool operator!=(const Term& other) const { return exp != other.exp; }// 為了讓ChainNode可以賦值預設值
 };
