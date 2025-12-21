@@ -60,7 +60,7 @@
   
 * Chain類別
 
-  我們使用為了方便存取前端和尾端節點需要head和last(指標)，避免存取尾端節點需要O(n)的情況，
+  我們使用為了方便存取前端和尾端節點需要head和last(指標)，避免存取尾端節點需要O(n)的情況。
 
   1. Chain()
 
@@ -72,9 +72,55 @@
 	 以此來判斷是否須將環狀斷開，讓av list方便處理，
 
 	 最後將兩個指標設為nullptr避免懸空。
-  3. 
-  4. s
-  5. 
+  3. append(const T& element)
+  
+     從av list取出一個節點newnode，先將原本尾部節點改為指向newnode，
+	 
+	 設定該節點元素並將newnode指向header完成環狀，並把last指向newnode使該節點成為尾節點。
+  4. clear()
+  	
+     使Chain清空，要注意空的定義是header->header而非header->nullptr(銷毀)，
+
+	 先定義first為header的下個空間避免header被返還av list，
+
+	 接下來將header和first連接切斷執行返還，接下來重新初始化header和last指標。
+  5. begin()
+  
+     要回傳header->next，因為header node本身不存資料。
+  6. end()
+
+	 不能回傳last應回傳header，避免迭代時略過最後一個元素。
+* Polynomial類別
+  我們使用Chain來完成Polynomial，這樣可以使用Chain的成員來完成Polynomial的操作。
+  1. Polynomial()
+  
+  	 會呼叫Chain的建構子
+  2. Polynomial(const Polynomial& a)
+  	 
+	 複製建構子用ChainIterator類別去做迭代，然後使用Chain的append來完成依項的複製。
+  3. ~Polynomial()
+  
+  	 會呼叫Chain的解構子
+  4. operator+(const Polynomial& b)
+
+  	 利用ChainIterator去遍歷a,b的多項式，指數大的先新增，一樣大就做係數相加再新增，
+
+	 如果其中一個多項式遍歷完，就把另一個多項式剩餘的全部新增。
+  5. operator-(const Polynomial& b)
+
+     利用ChainIterator去遍歷a,b的多項式，如果a指數大先新增，
+	 
+	 如果b指數大由於b為減數因此係數要多負號，如果指數相同就係數相加新增，
+	 
+	 如果其中一個多項式遍歷完，就把另一個多項式剩餘的全部新增。
+  6. operator*(const Polynomial& b)
+
+     新增一個多項式temp，雙迴圈遍歷a,b多項式，讓逐次讓a的單一項次去遍歷整個b多項次相乘相加到temp，
+
+	 遍歷完再將temp加到c多項式上，當a遍歷完即完成多項式乘法。
+  7. Evaluate(float x)
+  
+	 利用ChainIterator去遍歷並使用pow來完成帶入值計算相加。
 ## 程式實作
 以下為主要程式碼：
 ``` c++
