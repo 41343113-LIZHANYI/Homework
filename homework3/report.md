@@ -41,18 +41,40 @@
 
   所以有了AvailableList來做資源的重複利用。
   1. getBack(ChainNode<T>* firstNode)
-  	 返還av list需要先判斷串列是否為空，為空直接return，不為空原先Chain類別的解構子會把原本環狀段開，
+  	 
+	 返還av list需要先判斷串列是否為空，為空直接return，不為空原先Chain類別的解構子會把原本環狀段開，
 
 	 所以只要遍歷至nullptr就可以接上原本av list的header，隨後把header更新為firstnode即完成更新。
   2. getNode()
-  	 提取av list的node需要先判斷串列是否為空，如果為空就new新建一個ChainNode，
-	 如果需要把第一個節點提取來用(同時為header指向)，因此
+  	
+	 提取av list的node需要先判斷串列是否為空，如果為空就new新建一個ChainNode，
+	 
+	 如果需要把第一個節點提取來用(同時為header指向)，因此須將header指向下一個，
+	 
+	 並切斷和第一個節點的連接，才可釋出節點。
 * ChainIterator類別
-  * 資料成員
-  * 成員含式
+ 
+  迭代Chain需要一個currentNode(指標)成員遍歷和存取Chain的資料，
+
+  同時該類別需要運算子多載來讓呼叫時for可以使用it++。
+  
 * Chain類別
-  * 資料成員
-  * 成員含式
+
+  我們使用為了方便存取前端和尾端節點需要head和last(指標)，避免存取尾端節點需要O(n)的情況，
+
+  1. Chain()
+
+	 我們建構時需要使用av list的節點，並把head和last都指向head完成初始化。
+  2. ~Chain()
+
+	 我們解構時則需要返還給av list，我們要先做Chain是否為空的判斷，
+
+	 以此來判斷是否須將環狀斷開，讓av list方便處理，
+
+	 最後將兩個指標設為nullptr避免懸空。
+  3. 
+  4. s
+  5. 
 ## 程式實作
 以下為主要程式碼：
 ``` c++
