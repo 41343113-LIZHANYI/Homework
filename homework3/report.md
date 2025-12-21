@@ -411,36 +411,63 @@ int main(){
 }
 ```
 ## 效能分析
-#### (1) Polynomial() 建構子
-  * 時間複雜度：O(1) //僅初始化termArray、capacity、terms，與輸入無關
+#### (1) Term & ChainNode類別成員
+  * 時間複雜度：O(1) //皆為簡單資料儲存和賦值
+  * 空間複雜度：O(1) //不受參數影響
+#### (2) getBack(ChainNode<T>* firstNode)
+  * 時間複雜度：O(n) //需要遍歷串列得到尾端節點
+  * 空間複雜度：O(1) //不受參數影響
+#### (3) getNode() 
+  * 時間複雜度：O(1) //固定指標操作
+  * 空間複雜度：O(1) //固定變數
+#### (4) ChainIterator類別 運算子多載
+  * 時間複雜度：O(1) //都是極為簡短的指標操作
   * 空間複雜度：O(1) 
-#### (2) ~Polynomial() 解構子
-  * 時間複雜度：O(1) //僅執行delete[]釋放記憶體，與輸入無關
+#### (5) Chain()
+  * 時間複雜度：O(1) //只建立一個head並初始化
   * 空間複雜度：O(1) 
-#### (3) Polynomial(const Polynomial &copy) 複製建構子
-  * 時間複雜度：O(n) //單層for迴圈複製n次
-  * 空間複雜度：O(n) //new Term[capacity]分配新空間n大小
-#### (4) Polynomial& operator=(Polynomial copy) 賦值運算子重載
-  * 時間複雜度：O(n) //參數&copy在呼叫時會觸發複製建構子O(n)
-  * 空間複雜度：O(n) //雖然只有swap，但整體因複製建構子仍為O(n)
-#### (5) void newTerm(float c, int e) 項次新增含式
-  * 時間複雜度：O(n) or O(1) //如果空間足夠O(1)，否則須重分配空間觸發copy含式O(n)
-  * 空間複雜度：O(n) or O(1) //同理，不夠時重分配O(n)
-#### (6) Polynomial Add(Polynomial poly) 多項式相加含式
-  * 時間複雜度：O(m+n) //假設A項次=m B項次=n for迴圈各遍歷一次
-  * 空間複雜度：O(m+n) //最多m+n項至C多項式 
-#### (7) Polynomial Mult(Polynomial poly) 多項式相乘含式
-  * 時間複雜度：O(mxn) //雙層for迴圈，外層m次，內層n次
-  * 空間複雜度：O(mxn) //項次最多mxn項
-#### (8) float Eval(float f) 數值帶入x含式
-  * 時間複雜度：O(n) //單層for遍歷項次
-  * 空間複雜度：O(1) //固定變數不受輸入引響
-#### (9) istream& operator>>(istream& is, Polynomial& poly) 輸入運算子重載
-  * 時間複雜度：O(n) //單層while，受輸入引響O(n)
-  * 空間複雜度：O(n) //newTerm至poly最大O(n)
-#### (10) ostream& operator<<(ostream& os, const Polynomial& poly) 輸出運算子重載
-  * 時間複雜度：O(n) //for遍歷產生輸出
-  * 空間複雜度：O(1) //固定變數不受輸入引響
+#### (6) ~Chain()
+  * 時間複雜度：O(n) //getBack需遍歷串列
+  * 空間複雜度：O(1) 
+#### (7) append(const T& element)
+  * 時間複雜度：O(1) //有last指標不需要遍歷
+  * 空間複雜度：O(1) 
+#### (8) clear()
+  * 時間複雜度：O(n) //getBack需遍歷串列
+  * 空間複雜度：O(1) 
+#### (9) begin(), end()
+  * 時間複雜度：O(1) //都直接回傳位置
+  * 空間複雜度：O(1) 
+#### (10) Polynomial()
+  * 時間複雜度：O(1) //呼叫Chain建構子複雜度相同
+  * 空間複雜度：O(1)
+#### (11) Polynomial(const Polynomial& a)
+  * 時間複雜度：O(A) //遍歷a的節點
+  * 空間複雜度：O(A) //和a相同空間
+#### (12) ~Polynomial()
+  * 時間複雜度：O(A) //呼叫Chain解構複雜度相同
+  * 空間複雜度：O(1) 
+#### (13) operator=(const Polynomial& a)
+  * 時間複雜度：O(A+old_size) //先呼叫 clear()清除再遍歷a進行複製
+  * 空間複雜度：O(A)//相同大小 
+#### (14) operator+(const Polynomial& b)
+  * 時間複雜度：O(A+B) //a,b各遍歷一次
+  * 空間複雜度：O(A+B) //最壞情況項次不重複
+#### (15) operator-(const Polynomial& b)
+  * 時間複雜度：O(A+B) //和加法流程大致相同
+  * 空間複雜度：O(A+B)
+#### (16) operator*(const Polynomial& b)
+  * 時間複雜度：O(A^2*B) //A和B遍歷的巢狀迴圈還要考慮多項式c=c+temp相加問題
+  * 空間複雜度：O(A*B)// 乘法項次最大情況
+#### (17) Evaluate(float x)
+  * 時間複雜度：O(A) //遍歷A做pow相加
+  * 空間複雜度：O(1)
+#### (18) operator>>(istream& is, Polynomial& poly)
+  * 時間複雜度：O(n) //遍歷做輸入
+  * 空間複雜度：O(n) //n個節點
+#### (19) operator<<(ostream& os, const Polynomial& poly) 
+  * 時間複雜度：O(A) //遍歷A做輸出
+  * 空間複雜度：O(1)
 ## 測試與驗證
 ### 輸入
 |測試項目|輸入參數 $A$總項次|輸入參數 $A$多項次|輸入參數 $B$總項次|輸入參數 $B$多項次|輸入參數 $x$值|
