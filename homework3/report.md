@@ -4,10 +4,10 @@
 
 ## 解題說明
 ### 問題描述
-使用帶 header 節點的環狀鏈結串列，每個節點都含有以下三個資料(coef,exp,link)
+開發一個Polynomial類別使用具備首節點(header nodes) 的環狀鏈結串列
+，每個多項式都是有header node的環狀串列。
 
-來實作Polynomial類別
-
+為了有效地刪除多項式，我們需要使用可用空間串列 (available-space list)
 以下為題目要求:
 * (a) 輸入運算子多載
 * (b) 輸出運算子多載
@@ -29,14 +29,24 @@
 ### 解題策略
 * Term類別
   
-  作為項次類別需要coef係數和exp指數資料成員
-  1. 
+  作為項次類別需要coef(係數)和exp(指數)資料成員
+  
 * ChainNode類別
-  * 資料成員
-  * 成員含式
+  
+  節點定義為一個有element(元素)和next(指標)的類別
+  
 * AvailableList類別
-  * 資料成員
-  * 成員含式
+
+  因為頻繁地向作業系統呼叫new和delete效率低，
+
+  所以有了AvailableList來做資源的重複利用。
+  1. getBack(ChainNode<T>* firstNode)
+  	 返還av list需要先判斷串列是否為空，為空直接return，不為空原先Chain類別的解構子會把原本環狀段開，
+
+	 所以只要遍歷至nullptr就可以接上原本av list的header，隨後把header更新為firstnode即完成更新。
+  2. getNode()
+  	 提取av list的node需要先判斷串列是否為空，如果為空就new新建一個ChainNode，
+	 如果需要把第一個節點提取來用(同時為header指向)，因此
 * ChainIterator類別
   * 資料成員
   * 成員含式
