@@ -243,9 +243,9 @@ ostream& operator<<(ostream& os, const Polynomial& poly) {
     bool first=true;//first旗標避免第一個項次前輸出+
     for (;it!=poly.terms.end();++it){
         if(!first&&it->coef>0) 
-            os<<" + ";
+            os<<"+";
         if(it->coef<0)
-            os<< " - ";
+            os<<"-";
         float absCoef=abs(it->coef);
         if(absCoef!=1.0||it->exp==0)//係數是否輸出 1x輸出x 1x^0輸出1
             os<<absCoef;
