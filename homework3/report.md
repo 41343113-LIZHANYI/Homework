@@ -786,7 +786,7 @@ int main(){
 [須注意的事]
 
 * if(this!=&a)非常重要，否則先執行 clear() 會把來源資料也刪除，導致資料遺失
-### (14) operator+(const Polynomial& b)
+### (14) operator+(const Polynomial& b) 加法
 [設計原因]
 
 * 實作多項式加法，依次比較項次指數來操作和新增
@@ -826,7 +826,7 @@ int main(){
 [須注意的事]
 
 * 相減後係數為0的項次不應加入多項式中
-### operator*(const Polynomial& b) 乘法
+### (16) operator*(const Polynomial& b) 乘法
 [設計原因]
 
 * A的每一項都要與B的每一項相乘，並將結果累加
