@@ -909,131 +909,82 @@ int main(){
 * 若多項式為空，應輸出0
 
 ### 程式改進
-* 對以上三個成員含式Add() & Mult() & Eval() 做改進
-#### Add()-直接一次分配完空間和完全避免後續使用newTerm()
+* 針對原有Evaluate()、Mult()、~Chain()做出改進
+#### Evaluate()—改用霍納法則
 ```c++
-Polynomial Polynomial::Add(const Polynomial &poly){
-    Polynomial c;
-    c.capacity=terms+poly.terms; //預判最多項次的可能m+n
-    c.termArray=new Term[c.capacity]; //為新多項式動態規劃
-    int aPos=0,bPos=0;
-    while(aPos<terms&&bPos<poly.terms){
-        if(termArray[aPos].exp==poly.termArray[bPos].exp){
-            float sum=termArray[aPos].coef+poly.termArray[bPos].coef;
-            if(sum)
-                c.termArray[c.terms++]={sum,termArray[aPos].exp}; //這裡都使用terms做索引新增，避免newTerm()呼叫
-            aPos++;
-			bPos++;
-        }else if(termArray[aPos].exp>poly.termArray[bPos].exp){
-            c.termArray[c.terms++]=termArray[aPos++];
-        }else{
-            c.termArray[c.terms++]=poly.termArray[bPos++];
-        }
+float Polynomial::Evaluate(float x)const{
+    if(terms.begin()==terms.end())return 0;
+    ChainIterator<Term> it=terms.begin();
+    float result=it->coef; //初始為最高次項係數
+    int currentExp=it->exp;
+    ++it;
+    for (;it!=terms.end();++it){
+        result=result*pow(x,currentExp-it->exp)+it->coef;//計算指數差額
+        currentExp=it->exp;
     }
-    while(aPos<terms)//改用while
-        c.termArray[c.terms++]=termArray[aPos++];
-    while(bPos<poly.terms)
-        c.termArray[c.terms++]=poly.termArray[bPos++];
-    return c;
+    //補足最後一項到x^0的次數
+    result*=pow(x,currentExp);
+    return result;
 }
 ```
 #### [原有問題]
-* 每新增一項次都要呼叫newTerm()，要不斷檢查容量、重分配記憶體導致額外成本
-* 多次newTerm()需要多次記憶體存取、複製
+* 當指數很大時，pow要重複計算且效率低
+* 容易產生浮點數誤差
 #### [優化部分]
-1.一次性分配空間
-```c++
-c.capacity=terms+poly.terms;
-c.termArray=new Term[c.capacity];
-```
-避免不斷分配空間
 
-2.利用索引插入項次
-```c++
-c.termArray[c.terms++] = {sum, exp};
-```
-完全避免後續使用newTerm()，不會有額外的函式呼叫
+1.結合律提取公因數(霍納法則)
 
-3.改用while新增剩餘項至新空間
-
-讓程式看起來更整潔
+2.pow的指數參數從次方數優化為項次間的差值
 
 結論:
-* 時間複雜度常數降低
-* 動態記憶體分配次數從多次降為1次
-#### Mult()-一次分配完空間和完全避免後續呼叫newTerm() & 避免使用Add()和臨時多項式temp
+* 時間複雜度降低為線性時間
+* 減少了乘法運算的總次數，數值精確度提高
+#### Mult()—拿掉臨時變數直接存結果進去
 ```c++
-Polynomial Polynomial::Mult(const Polynomial &poly){
-    if(terms==0||poly.terms==0)
-		return Polynomial();//return f(x)=0
-    int maxCap=terms*poly.terms;//預判最多項次可能 mxn
+Polynomial Polynomial::operator*(const Polynomial& b)const{
     Polynomial c;
-    c.capacity=maxCap;
-    c.termArray=new Term[maxCap];
-    for(int i=0;i<terms;++i){
-        for(int j=0;j<poly.terms;++j){
-            float newC=termArray[i].coef*poly.termArray[j].coef;
-            int newE=termArray[i].exp+poly.termArray[j].exp;
-            bool found=false; //flag
-            for(int k=0;k<c.terms;++k){ //每次都遍歷是否有相同指數
-                if(c.termArray[k].exp==newE){
-                    c.termArray[k].coef+=newC; //如果有相加
-                    found=true;
-                    break;
-                }
-            }
-            if(!found&&newC!=0)
-                c.termArray[c.terms++]={newC,newE};
+    if(terms.begin()==terms.end()||b.terms.begin()==b.terms.end())
+		return c;
+    for(ChainIterator<Term> ait=terms.begin();ait!=terms.end();++ait){
+        for(ChainIterator<Term> bit=b.terms.begin();bit!= b.terms.end();++bit){
+            float newCoef=ait->coef*bit->coef;
+            int newExp=ait->exp+bit->exp;
         }
     }
     return c;
 }
 ```
 #### [原有問題]
-* 乘法都要建立一個臨時多項式temp再用Add()累加，浪費時間與空間
+* 原本的寫法在迴圈裡建立了一個temp多項式，完成計算把temp加到c，最後刪除temp，太過耗時
 #### [優化部分]
-1.一次性分配空間
-```c++
-c.capacity = terms * poly.terms;
-c.termArray = new Term[c.capacity];
-```
-避免不斷分配空間
-
-2.就地合併同次方項
-```c++
-for(int k=0;k<c.terms;++k){
-	if(c.termArray[k].exp == newE){
-		c.termArray[k].coef += newC;
-		found = true;
-		break;
-	}
-}
-if(!found && newC != 0)
-	c.termArray[c.terms++] = {newC, newE};
-```
-完全避免使用newTerm() & Add()，不會有額外的函式呼叫，也不會多新增temp多項式
-
+1.不建立temp，算出係數和指數後，直接把這個新項次插入到c的正確位置
 結論:
-* 避免兩個成員含式呼叫，降低時間複雜度
-* 避免建構temp多項式，降低空間複雜度
-#### Mult()-改用霍納法則
+* 省下大量的時間，不用反覆建立和刪除物件
+#### ~Chain()—利用last指標回收資源
 ```c++
-float Polynomial::Eval(float f){
-	float res=0;
-	for(int i=0;i<terms;++i){
-		res=res*f+termArray[i].coef;//霍納法則
-	}
-	return res;
+static void getBack(ChainNode<T>* firstNode,ChainNode<T>* lastNode){
+    if(!firstNode)
+		return;
+    lastNode->next=head; 
+    head=firstNode;
+}
+~Chain(){
+    if(head&&head->next!=head){ 
+        ChainNode<T>* first=head->next; 
+        last->next=nullptr;//把環斷開
+        AvailableList<T>::getBack(first,last); 
+        head->next=nullptr;
+        AvailableList<T>::getBack(head); 
+    } 
+    head->next=nullptr;
+    AvailableList<T>::getBack(head);
+    head=nullptr;
+    last=nullptr;
 }
 ```
 #### [原有問題]
-* 每個項次都呼叫pow()重複計算次方，成本高
-
+* 原本在回收串列時，get函式為了要把這串東西返還av list，必須從頭跑到尾找出最後一個節點
 #### [優化部分]
-
-程式使用霍納法則的多項式算法(下圖)
-<img width="1218" height="160" alt="image" src="https://github.com/user-attachments/assets/98ab414a-4d64-4b4d-b7ef-b4ec72d9092f" />
-
+1.我們的 Chain 類別裡本來就有存last。直接把頭跟尾都傳給回收函式，它就能馬上接好不用再跑迴圈
 結論:
-* 將原本時間複雜度O(n^2)降為O(n)
-* 完全避免pow()執行時間大幅減少
+* 時間複雜度變為O(1)
