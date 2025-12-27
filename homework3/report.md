@@ -966,6 +966,7 @@ Polynomial Polynomial::operator*(const Polynomial& b)const{
                 prev->next=newNode;
                 if(curr==c.terms.head){
                     c.terms.last=newNode;
+				}
 			}
         }
     }
