@@ -146,9 +146,13 @@ int main(){
 
 #### (1) Max/Min Heap
 ## 測試與驗證
-<img width="547" height="391" alt="image" src="https://github.com/user-attachments/assets/224d2914-55cf-46cb-96b5-5c2b69290dc2" />
-<img width="535" height="387" alt="image" src="https://github.com/user-attachments/assets/e6f8a59d-4017-4925-8d88-ff265cc7a817" />
-<img width="531" height="397" alt="image" src="https://github.com/user-attachments/assets/c4fb585e-3354-402e-8b75-00f9c7a23490" />
+<table>
+  <tr>
+    <td align="center"><b>1.</b><br><img src="https://github.com/user-attachments/assets/224d2914-55cf-46cb-96b5-5c2b69290dc2" width="250"></td>
+    <td align="center"><b>2.</b><br><img src="https://github.com/user-attachments/assets/e6f8a59d-4017-4925-8d88-ff265cc7a817" width="250"></td>
+    <td align="center"><b>3.</b><br><img src="https://github.com/user-attachments/assets/c4fb585e-3354-402e-8b75-00f9c7a23490" width="250"></td>
+  </tr>
+</table>
 
 ### 輸入
 | 測試項目 | 時間測試隨機測資數 n | 手動建樹資料量 n | 輸入 n 個資料 |
