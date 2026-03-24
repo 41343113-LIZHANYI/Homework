@@ -286,13 +286,13 @@ public:
 template<class K, class E>
 class BSTDictionary:public Dictionary<K, E>{
 private:
-    TreeNode<K, E>* root; //字典樹根節點
-    TreeNode<K, E>* insert(TreeNode<K, E>* node,const pair<K, E>& e){ //遞迴插入
+    TreeNode<K, E>* root; //字典樹根節
+    TreeNode<K, E>* insert(TreeNode<K, E>* node,const pair<K, E>& e){ 
         if(!node)
             return new TreeNode<K, E>(e); //到底則建立新節點
         if(e.first<node->data.first)
             node->left=insert(node->left,e); //小於往左
-        else if(e.first > node->data.first)
+        else if(e.first>node->data.first)
             node->right=insert(node->right,e); //大於往右
         else node->data.second=e.second; //若鍵值重複則更新元素內容
         return node; //回傳當前節點
@@ -302,9 +302,11 @@ private:
             return 0; //遞迴結束
         return 1+max(getHeight(node->left), getHeight(node->right)); //遞迴取最大子樹高+1
     }
-    TreeNode<K, E>* findMin(TreeNode<K, E>* node) { //遞迴找最小值
-        if (node->left == NULL) return node; //左邊為空代表是最小值
-        else return findMin(node->left); //否則繼續往左遞迴
+    TreeNode<K, E>* findMin(TreeNode<K, E>* node){ 
+        if(node->left==NULL) 
+            return node; //找到葉節點
+        else 
+            return findMin(node->left); //不為空繼續往左跑
     }
     TreeNode<K, E>* remove(TreeNode<K, E>* node,const K& k){ 
         if(!node) 
@@ -338,35 +340,35 @@ private:
             return get(node->right, k); //遞迴右子樹
         return &(node->data); //相等回傳指標
     }
-    void destroy(TreeNode<K, E>* node){ //遞迴釋放記憶體
+    void destroy(TreeNode<K, E>* node){ 
         if(!node)
             return; //空則返回
         destroy(node->left); //清空左
         destroy(node->right); //清空右
-        delete node; //刪除自身
+        delete node; //刪除自己
     }
 public:
-    BSTDictionary():root(NULL){} //初始化空字典
-    ~BSTDictionary(){destroy(root);} //解構時清空整棵樹
-    bool IsEmpty() const override{return root==NULL;} //實作IsEmpty
-    pair<K, E>* Get(const K& k) const override{return get(root,k);} //實作Get
-    void Insert(const pair<K, E>& e) override{root=insert(root,e);} //實作Insert
-    void Delete(const K& k) override{root=remove(root,k);} //實作Delete
-    int getHeight() const{return getHeight(root);} //公開高度介面(實驗用)
+    BSTDictionary():root(NULL){} 
+    ~BSTDictionary(){destroy(root);} 
+    bool IsEmpty() const override{return root==NULL;} 
+    pair<K, E>* Get(const K& k) const override{return get(root,k);} 
+    void Insert(const pair<K, E>& e) override{root=insert(root,e);} 
+    void Delete(const K& k) override{root=remove(root,k);} 
+    int getHeight() const{return getHeight(root);} 
 };
 int main(){
     srand(time(0)); //設定亂數種子
-    int ns[]={100,500,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000}; //測資陣列
+    int ns[]={100,500,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000};
     cout<<"n\tHeight\tRatio(Height/log2(n))\n"; //輸出col名 
-    for(int n:ns){ //遍歷每個n
-        BSTDictionary<int, int> dict; //建立字典樹
-        for(int i=0;i<n;++i) { //執行n次插入
+    for(int n:ns){ 
+        BSTDictionary<int, int> dict; 
+        for(int i=0;i<n;++i) { //n次插入
             int rnd=rand(); //產生亂數
             dict.Insert(make_pair(rnd, rnd)); //使用pair插入鍵與值
         }
-        int height=dict.getHeight(); //取得樹高
-        double ratio=height/log2(n); //計算比例
-        cout<<n<<"\t"<<height<<"\t"<<ratio<<"\n"; //輸出結果
+        int height=dict.getHeight(); 
+        double ratio=height/log2(n); //比值
+        cout<<n<<"\t"<<height<<"\t"<<ratio<<"\n"; 
     }
     return 0;
 }
