@@ -36,7 +36,29 @@
    
    挑選較大(MaxHeap)或較小(MinHeap)的子節點往上移，反覆執行直到最後一個元素大於等於(MaxHeap)或小於等於(MinHeap)其子節點，或是到達葉節點停止，最後將值放入該位置。
 #### (2) BST
+1. BSTInsert(const pair<K, E>& e)
+   
+   利用遞迴的方式，將傳入的鍵值對與當前節點進行比較。
+   
+   若鍵值小於當前節點往左子樹尋找，大於則往右子樹尋找。
+   
+   遇到空指標時即為插入位置，動態配置新節點並回傳，若鍵值已存在則更新該節點的內容。
+   
+2. Delete(const K& k)
+   
+   實作二元搜尋樹的節點刪除，需先以遞迴找到目標鍵值的位置。
+   
+   刪除情況分三種：無子節點直接刪除、單一子節點以其子節點取代、兩個子節點則尋找右子樹的最小值（中序後繼）替換。
+   
+   替換資料後，再針對該後繼節點進行遞迴刪除，確保樹的結構維持二元搜尋樹的性質。
 
+3. getHeight(TreeNode<K, E>* node)
+   
+   利用遞迴走訪計算樹的高度，若節點為空則回傳0，
+   
+   分別取得左子樹與右子樹的高度後，取最大值加一，即為當前節點的樹高，
+   
+   最終將根節點算出的高度除以 $\log_2 n$ 求得比值，完成題目的驗證要求。
 
 ## 程式實作
 以下為主要程式碼：
@@ -391,7 +413,18 @@ int main(){
       * 時間複雜度： $O(1)$ // 初始化與釋放記憶體
       * 空間複雜度： $O(1)$
 #### (2) BST
-
+   1. Insert(const pair<K, E>& e)
+      * 時間複雜度： $O(\log n)$ //最壞情況 $O(n)$
+      * 空間複雜度： $O(h)$ //$h$為樹高
+   2. Delete(const K& k)
+      * 時間複雜度： $O(\log n)$ //最壞情況 $O(n)$需要遍歷至目標節點並可能尋找後繼節點
+      * 空間複雜度： $O(h)$ 
+   3. getHeight(TreeNode<K, E> node)
+      * 時間複雜度： $O(n)$ //必須走訪每一個節點
+      * 空間複雜度： $O(h)$ //遞迴深度等於樹高
+   4. Get(const K& k)
+      * 時間複雜度： $O(\log n)$ //最壞情況$O(n)$
+      * 空間複雜度： $O(h)$ 
 
 ### 測試案例
 
@@ -454,55 +487,99 @@ int main(){
 ### 程式分析
 對當前寫的程式做優點以及資料結構&演算法分析，還有程式需注意的要點
 #### (1) Max/Min Heap
-##### [選擇遞迴的原因]
-1. 在本程式中，使用遞迴計算 Ackermann 函數主要原因如下：
-   |函數定義|條件|
-   |:---:|:---:|
-   | $A(m, n) = n + 1$|**$m=0$**|
-   |$A(m,n)=A(m-1,1)$|**$n=0$**|
-   |$A(m,n)=A(m-1,A(m,n-1))$|**$otherwise$**|
-   * 遞迴實作可直接對應數學公式，使邏輯一目了然，有利於團隊理解演算法意圖與驗證正確性。
-2. 容易理解與實現
 
-   遞迴避免手動管理堆疊或額外變數，每個函式呼叫即代表子問題可讀性高
-   
-   對程式競賽而言，程式碼短小且直觀，減少出錯機率，對專案協作，容易讓團隊快速理解與維護。
-4. 遞迴語意清楚
-   
-   每次遞迴呼叫代表「子問題求解」，返回值逐層累加完成計算，這種設計降低中間要處理的狀態管理，對競程減少Bug，對專案增加程式可讀性。
 ##### [使用資料結構與演算法]
-* 資料結構：基本型別 unsigned long long 用來乘載快速增長的數值
-* 演算法：遞迴算法對應數學公式
+* 資料結構： 一維陣列模擬的完全二元樹
+* 演算法：
+  1. 利用向上浮動與向下沉降進行節點比較與位置交換
+  2. 並在容量不足時動態配置兩倍加一的新陣列
 ##### [須注意的事]
-遞迴深度隨m,n增長，速度極快，容易堆疊溢出。
 
-僅適用小範圍m,n，可加入例外處理判斷來提升穩定性。
 #### (2) BST
-##### [選擇非遞迴的原因]
-1. 避免堆疊溢位，對大範圍 m,n 使用封閉公式直接計算
-   |      |     |
-   |:---:|:---:|
-   |m=0|A(m,n)=n+1|
-   |m=1|A(m,n)=n+2|
-   |m=2|A(m,n)=2n+3|
-   |m=3|A(m,n)=2^(n+3)-3|
-   |m=4,5|小範圍n直接數值對應|
-2. 運算效率比起遞迴高非常多
 ##### [使用資料結構與演算法]
-* 資料結構：unsigned long long+ullpow快速次方
-* 演算法：條件判斷+封閉公式+位運算快速次方
+* 資料結構： 指標鏈結的二元搜尋樹
+* 演算法： 遞迴樹狀走訪
 ##### [須注意的事]
-超過 64-bit 範圍會溢位，應該加上提示或輸入的限制
 
-非遞迴版本適合大範圍快速計算(Ex:Ack(3,60))
-
-#### (1) Max/Min Heap 
-
+#### (1) Max/Min Heap — 由下而上建樹 
+```c++
+MaxHeap(T* initArray, int n) {
+    heapSize = n; // 設定初始大小
+    capacity = n + 10; // 預留部分擴充空間
+    heap = new T[capacity + 1]; // 配置1-based動態陣列
+    for (int i = 1; i <= n; ++i)
+        heap[i] = initArray[i - 1]; // 將外部陣列資料複製進heap
+    for (int i = heapSize / 2; i >= 1; --i) { // 從最後一個非葉節點往前遍歷
+        int currentNode = i;
+        int child = 2 * i;
+        T temp = heap[currentNode]; // 暫存當前準備向下沉降的節點值
+        while (child <= heapSize) {
+            if (child < heapSize && heap[child] < heap[child + 1])
+                child++; // 挑選左右子節點中較大者
+            if (temp >= heap[child])
+                break; // 若暫存值大於等於最大子節點則已滿足特性
+            heap[currentNode] = heap[child]; // 子節點往上移
+            currentNode = child; // 更新當前位置
+            child *= 2; // 繼續檢查下一層左子節點
+        }
+        heap[currentNode] = temp; // 將暫存值放入最終正確位置
+    }
+}
+```
+##### [原有問題]
+   * 原本需要一個個呼叫Push()插入資料，每次插入最壞情況需$O(\log n)$。
+   * 若要建立包含$n$個元素的堆積，總時間複雜度會高達 $O(n \log n)$，對於已知全部測資的初始建樹過程非常缺乏效率。
 ##### [優化部分]
-
-
-##### [遺留問題]
-
-#### (2) BST
-
+   1. 不逐一觸發向上浮動，而是先將 $n$ 筆資料直接填入陣列。
+   2. 從最後一個非葉節點往前遍歷至根節點，逐一執行向下沉降。
+##### [結論]
+   1. 時間複雜度降低為線性時間 $O(n)$。
+   2. 因為底層節點多但沉降距離短，上層節點少沉降距離長，整體大幅減少了節點比較的總次數，顯著提升初始建樹效能。
+#### (2) BST — 非遞迴版本的Insert和Get
+``` c++
+void InsertIterative(const pair<K, E>& e) {
+    TreeNode<K, E>* newNode = new TreeNode<K, E>(e); // 預先建立新節點
+    if (!root) {
+        root = newNode; // 樹若為空則直接作為根節點
+        return;
+    }
+    TreeNode<K, E>* current = root;
+    TreeNode<K, E>* parent = NULL; // 用來記錄current的父節點
+    while (current) {
+        parent = current; // 往下層移動前先記錄父節點
+        if (e.first < current->data.first)
+            current = current->left; // 鍵值較小則往左走
+        else if (e.first > current->data.first)
+            current = current->right; // 鍵值較大則往右走
+        else {
+            current->data.second = e.second; // 若鍵值已存在則更新資料
+            delete newNode; // 刪除多餘的新節點避免記憶體流失
+            return;
+        }
+    }
+    if (e.first < parent->data.first)
+        parent->left = newNode; // 接在父節點的左側
+    else
+        parent->right = newNode; // 接在父節點的右側
+}
+pair<K, E>* GetIterative(const K& k) const {
+    TreeNode<K, E>* current = root; // 從根節點開始搜尋
+    while (current) {
+        if (k < current->data.first)
+            current = current->left; // 鍵值較小往左尋找
+        else if (k > current->data.first)
+            current = current->right; // 鍵值較大往右尋找
+        else
+            return &(current->data); // 找到目標則回傳該節點的資料指標
+    }
+    return NULL; // 若迴圈結束仍未找到則回傳空指標
+}
+```
+##### [原有問題]
+   * 原本寫法高度依賴遞迴，每一次往下走訪都會在系統記憶體中產生一層呼叫堆疊 (Call Stack)。
+   * 當插入已排序資料導致樹極度不平衡（退化成斜曲樹）時，遞迴深度等於節點數 $n$，空間複雜度達 $O(n)$，極易引發堆疊溢位 (Stack Overflow) 導致程式崩潰。
+##### [優化部分]
+   1. 放棄遞迴呼叫，改用 while 迴圈搭配暫存指標 (current 與 parent) 來進行樹狀結構的走訪與更新。
+##### [結論]
+   1. 空間複雜度完美降低為 $O(1)$。徹底消除了堆疊溢位的風險，同時也省下了作業系統處理大量函式呼叫與返回的額外時間開銷。
 
