@@ -288,17 +288,17 @@ class Dictionary{ //BST的ADT
 public:
     virtual ~Dictionary(){} //解構
     virtual bool IsEmpty() const=0; //是否為空
-    virtual pair<K, E>* Get(const K&) const=0; //取得Key對應的指標
+    virtual pair<K,E>* Get(const K&) const=0; //取得Key對應的指標
     virtual void Insert(const pair<K, E>&)=0; //插入Key和值
     virtual void Delete(const K&)=0; //刪除指定Key值的節點
 };
-template<class K, class E>
+template<class K,class E>
 class TreeNode{
 public:
     TreeNode* left; //左子樹指標
     TreeNode* right; //右子樹指標
-    pair<K, E> data; //鍵值對資料
-    TreeNode(pair<K, E> e){ //建構子初始化
+    pair<K,E> data; //鍵值對資料
+    TreeNode(pair<K,E> e){ //建構子初始化
         this->data.first=e.first; 
         this->data.second=e.second; 
         this->left=NULL; 
@@ -308,8 +308,8 @@ public:
 template<class K, class E>
 class BSTDictionary:public Dictionary<K, E>{
 private:
-    TreeNode<K, E>* root; //字典樹根節
-    TreeNode<K, E>* insert(TreeNode<K, E>* node,const pair<K, E>& e){ 
+    TreeNode<K,E>* root; //字典樹根節
+    TreeNode<K,E>* insert(TreeNode<K,E>* node,const pair<K,E>& e){ 
         if(!node)
             return new TreeNode<K, E>(e); //到底則建立新節點
         if(e.first<node->data.first)
@@ -319,18 +319,18 @@ private:
         else node->data.second=e.second; //若鍵值重複則更新元素內容
         return node; //回傳當前節點
     }
-    int getHeight(TreeNode<K, E>* node) const{ //遞迴取得高度 part a 要求
+    int getHeight(TreeNode<K,E>* node) const{ //遞迴取得高度 part a 要求
         if(!node)
             return 0; //遞迴結束
         return 1+max(getHeight(node->left), getHeight(node->right)); //遞迴取最大子樹高+1
     }
-    TreeNode<K, E>* findMin(TreeNode<K, E>* node){ 
+    TreeNode<K,E>* findMin(TreeNode<K,E>* node){ 
         if(node->left==NULL) 
             return node; //找到葉節點
         else 
             return findMin(node->left); //不為空繼續往左跑
     }
-    TreeNode<K, E>* remove(TreeNode<K, E>* node,const K& k){ 
+    TreeNode<K,E>* remove(TreeNode<K,E>* node,const K& k){ 
         if(!node) 
             return node; //沒找到
         if(k<node->data.first)
@@ -339,21 +339,21 @@ private:
             node->right=remove(node->right,k); //遞迴右子樹
         else{
             if(!node->left){ //若無左子樹
-                TreeNode<K, E>* temp=node->right; //暫存右子樹
+                TreeNode<K,E>* temp=node->right; //暫存右子樹
                 delete node; //刪除節點
                 return temp; //回傳右子樹接上
             }else if(!node->right){ //若無右子樹
-                TreeNode<K, E>* temp=node->left; //暫存左子樹
+                TreeNode<K,E>* temp=node->left; //暫存左子樹
                 delete node; //刪除節點
                 return temp; //回傳左子樹接上
             }
-            TreeNode<K, E>* temp=findMin(node->right); //找右子樹中序後繼節點
+            TreeNode<K,E>* temp=findMin(node->right); //找右子樹中序後繼節點
             node->data=temp->data; //複製後繼節點資料至當前節點
             node->right=remove(node->right, temp->data.first); //遞迴刪除該後繼節點
         }
         return node; //回傳更新後的節點
     }
-    pair<K, E>* get(TreeNode<K, E>* node,const K& k)const{ //遞迴查詢特定鍵值
+    pair<K,E>* get(TreeNode<K, E>* node,const K& k)const{ //遞迴查詢特定鍵值
         if(!node)
             return NULL; //找不到回傳空指標
         if(k<node->data.first)
@@ -362,7 +362,7 @@ private:
             return get(node->right, k); //遞迴右子樹
         return &(node->data); //相等回傳指標
     }
-    void destroy(TreeNode<K, E>* node){ 
+    void destroy(TreeNode<K,E>* node){ 
         if(!node)
             return; //空則返回
         destroy(node->left); //清空左
@@ -383,10 +383,10 @@ int main(){
     int ns[]={100,500,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000};
     cout<<"n\tHeight\tRatio(Height/log2(n))\n"; //輸出col名 
     for(int n:ns){ 
-        BSTDictionary<int, int> dict; 
+        BSTDictionary<int,int> dict; 
         for(int i=0;i<n;++i) { //n次插入
             int rnd=rand(); //產生亂數
-            dict.Insert(make_pair(rnd, rnd)); //使用pair插入鍵與值
+            dict.Insert(make_pair(rnd,rnd)); //使用pair插入鍵與值
         }
         int height=dict.getHeight(); 
         double ratio=height/log2(n); //比值
@@ -482,9 +482,9 @@ int main(){
 |10000   |34      |2.55875|
 
 ### 結論
-1. Heap 的效率在$n=10^6$的測試下，MaxHeap 與 MinHeap 的執行時間幾乎一致，證明演算法對稱性與複雜度完全相同，均符合 $O(\log n)$。
+1. Heap 的效率在 $n=10^6$ 的測試下，MaxHeap與MinHeap的執行時間幾乎一致，證明演算法對稱性與複雜度完全相同，均符合 $O(\log n)$。
 
-2. 測試輸出結果顯示$height / \log_2 n$的比值落在2.0到2.6之間，符合題目預期。
+2. 測試輸出結果顯示 $height / \log_2 n$ 的比值落在2.0到2.6之間，符合題目預期。
 ## 申論及開發報告
 ### 程式分析
 對當前寫的程式做優點以及資料結構&演算法分析，還有程式需注意的要點
@@ -496,7 +496,7 @@ int main(){
   1. 利用向上浮動與向下沉降進行節點比較與位置交換
   2. 並在容量不足時動態配置兩倍加一的新陣列
 ##### [須注意的事]
-1. 程式跳過heap[0]使用1 based，使父節點$i$的子節點直接為$2i$和$2i+1$
+1. 程式跳過heap[0]使用1 based，使父節點$i$的子節點直接為 $2i$ 和 $2i+1$
 #### (2) BST
 ##### [使用資料結構與演算法]
 * 資料結構： 指標鏈結的二元搜尋樹
