@@ -537,42 +537,42 @@ MaxHeap(T* initArray, int n) {
    2. 因為底層節點多但沉降距離短，上層節點少沉降距離長，整體大幅減少了節點比較的總次數，顯著提升初始建樹效能。
 #### (2) BST — 非遞迴版本的Insert和Get
 ``` c++
-void InsertIterative(const pair<K, E>& e) {
-    TreeNode<K, E>* newNode = new TreeNode<K, E>(e); // 預先建立新節點
-    if (!root) {
-        root = newNode; // 樹若為空則直接作為根節點
+void InsertIterative(const pair<K,E>& e){
+    TreeNode<K, E>* newNode=new TreeNode<K,E>(e); //預建新節點
+    if(!root){
+        root=newNode; // 如果樹為空則直接當根節點
         return;
     }
-    TreeNode<K, E>* current = root;
-    TreeNode<K, E>* parent = NULL; // 用來記錄current的父節點
-    while (current) {
-        parent = current; // 往下層移動前先記錄父節點
-        if (e.first < current->data.first)
-            current = current->left; // 鍵值較小則往左走
-        else if (e.first > current->data.first)
-            current = current->right; // 鍵值較大則往右走
-        else {
-            current->data.second = e.second; // 若鍵值已存在則更新資料
-            delete newNode; // 刪除多餘的新節點避免記憶體流失
+    TreeNode<K,E>* current=root;
+    TreeNode<K,E>* parent=NULL; // 用來記錄current的父節點
+    while(current){
+        parent=current; //先記錄父節點
+        if(e.first<current->data.first)
+            current=current->left; // 較小則往左走
+        else if(e.first > current->data.first)
+            current=current->right; // 較大則往右走
+        else{
+            current->data.second=e.second; //若key已存在則更新資料
+            delete newNode; //刪除多餘節點
             return;
         }
     }
-    if (e.first < parent->data.first)
-        parent->left = newNode; // 接在父節點的左側
+    if(e.first<parent->data.first)
+        parent->left=newNode; //接在父節點的左邊
     else
-        parent->right = newNode; // 接在父節點的右側
+        parent->right=newNode; //接在父節點的右邊
 }
-pair<K, E>* GetIterative(const K& k) const {
-    TreeNode<K, E>* current = root; // 從根節點開始搜尋
-    while (current) {
-        if (k < current->data.first)
-            current = current->left; // 鍵值較小往左尋找
-        else if (k > current->data.first)
-            current = current->right; // 鍵值較大往右尋找
+pair<K,E>* GetIterative(const K& k)const{
+    TreeNode<K,E>* current=root; //從root開始搜尋
+    while(current){
+        if(k<current->data.first)
+            current=current->left; // key較小往左尋找
+        else if(k>current->data.first)
+            current=current->right; //較大往右尋找
         else
-            return &(current->data); // 找到目標則回傳該節點的資料指標
+            return &(current->data); //找到目標 回傳該節點指標
     }
-    return NULL; // 若迴圈結束仍未找到則回傳空指標
+    return NULL; //仍未找到回傳空指標
 }
 ```
 ##### [原有問題]
