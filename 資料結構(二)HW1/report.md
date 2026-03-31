@@ -482,7 +482,9 @@ int main(){
 |10000   |34      |2.55875|
 
 ### 結論
-  
+1. Heap 的效率在$n=10^6$的測試下，MaxHeap 與 MinHeap 的執行時間幾乎一致，證明演算法對稱性與複雜度完全相同，均符合 $O(\log n)$。
+
+2. 測試輸出結果顯示$height / \log_2 n$的比值落在2.0到2.6之間，符合題目預期。
 ## 申論及開發報告
 ### 程式分析
 對當前寫的程式做優點以及資料結構&演算法分析，還有程式需注意的要點
@@ -494,35 +496,37 @@ int main(){
   1. 利用向上浮動與向下沉降進行節點比較與位置交換
   2. 並在容量不足時動態配置兩倍加一的新陣列
 ##### [須注意的事]
-
+1. 程式跳過heap[0]使用1 based，使父節點$i$的子節點直接為$2i$和$2i+1$
 #### (2) BST
 ##### [使用資料結構與演算法]
 * 資料結構： 指標鏈結的二元搜尋樹
 * 演算法： 遞迴樹狀走訪
 ##### [須注意的事]
-
+1. 迴深度過大會引發堆疊溢位，這點會在優化時處理
+### 程式改進
+對目前的程式片段做優化處理
 #### (1) Max/Min Heap — 由下而上建樹 
 ```c++
-MaxHeap(T* initArray, int n) {
-    heapSize = n; // 設定初始大小
-    capacity = n + 10; // 預留部分擴充空間
-    heap = new T[capacity + 1]; // 配置1-based動態陣列
-    for (int i = 1; i <= n; ++i)
-        heap[i] = initArray[i - 1]; // 將外部陣列資料複製進heap
-    for (int i = heapSize / 2; i >= 1; --i) { // 從最後一個非葉節點往前遍歷
-        int currentNode = i;
-        int child = 2 * i;
-        T temp = heap[currentNode]; // 暫存當前準備向下沉降的節點值
-        while (child <= heapSize) {
-            if (child < heapSize && heap[child] < heap[child + 1])
-                child++; // 挑選左右子節點中較大者
-            if (temp >= heap[child])
-                break; // 若暫存值大於等於最大子節點則已滿足特性
-            heap[currentNode] = heap[child]; // 子節點往上移
-            currentNode = child; // 更新當前位置
-            child *= 2; // 繼續檢查下一層左子節點
+MaxHeap(T* initArray,int n){
+    heapSize=n; //設定初始大小
+    capacity=n+10; //預留空間
+    heap=new T[capacity+1]; //配置1based動態陣列
+    for(int i=1;i<=n;++i)
+        heap[i]=initArray[i-1]; //將外部陣列資料複製進heap
+    for (int i=heapSize/2;i>=1;--i){ //從最後一個非葉節點向前遍歷
+        int currentNode=i;
+        int child=2*i;
+        T temp=heap[currentNode]; //暫存當前準備向下的節點值
+        while(child<=heapSize){
+            if(child< heapSize&&heap[child]<heap[child+1])
+                child++; //挑選子節點中較大者
+            if(temp>=heap[child])
+                break;
+            heap[currentNode]=heap[child]; //子節點上移
+            currentNode=child; //更新位置
+            child*=2; //檢查下一層左子節點
         }
-        heap[currentNode] = temp; // 將暫存值放入最終正確位置
+        heap[currentNode]=temp; //將值放入正確位置
     }
 }
 ```
