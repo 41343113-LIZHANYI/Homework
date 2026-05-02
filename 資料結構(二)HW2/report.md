@@ -25,9 +25,19 @@
 ### 解題策略
 各算法有限制圖的類別與情況
 
-共分四個cpp檔案有權重、無權重、有向、無向的組合分配以下算法
+共分四個cpp檔案 (ud&uw.cpp、ud&w.cpp、d&uw.cpp、d&w.cpp)
 
-1. DFS&BFS
+有權重、無權重、有向、無向的組合並分配以下算法
+
+1. DFS & BFS (四種圖皆可)
+2. 生成樹 (無向無權)
+3. 連通元件 & 雙連通單元 (無向無權)
+4. Kruskal’s Algorithm & Prim’s Algorithm (無向有權)
+5. 一對多:無負權 Dijkstra's Algorithm (有向有權、無向有權)
+6. 一對多:有負權 Bellman-Ford Algorithm (有向有權)
+7. 多對多 Floyd-Warshall Algorithm (有向有權、無向有權)
+8. 頂點活動網路 (有向無權)
+9. 邊活動網路 (有向有權)
 #### (1) Max/Min Heap
 1. ChangeSize1D()
 
