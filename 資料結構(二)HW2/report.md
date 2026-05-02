@@ -23,7 +23,11 @@
       2. Activity on Edge (AOV) Networks (邊活動網路)
 
 ### 解題策略
+各算法有限制圖的類別與情況
 
+共分四個cpp檔案有權重、無權重、有向、無向的組合分配以下算法
+
+1. DFS&BFS
 #### (1) Max/Min Heap
 1. ChangeSize1D()
 
