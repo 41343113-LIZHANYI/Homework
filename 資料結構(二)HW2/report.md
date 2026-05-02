@@ -38,6 +38,13 @@
 7. 多對多 Floyd-Warshall Algorithm (有向有權、無向有權)
 8. 頂點活動網路 (有向無權)
 9. 邊活動網路 (有向有權)
+
+由於我們**兩種表示法會同時存在於同個程式**
+
+我們會在每個函式操作完後用if(adj Matrix==adj list)
+
+來驗證兩種操作的結果相同
+
 #### (1) Max/Min Heap
 1. ChangeSize1D()
 
