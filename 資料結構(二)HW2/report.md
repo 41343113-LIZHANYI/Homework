@@ -4,15 +4,24 @@
 
 ## 解題說明
 ### 問題描述
-1. 實作MinPQ(ADT)，接著實作繼承於MinPQ的MinHeap類別，時間複雜度應該與 MaxHeap 對應函式的時間複雜度相同。
+1. 使用有向、無向、有權重、無權重的四種 Graph 並實現以下算法
+   1. Elementary Graph Operations (基本圖運算)
+      1. Depth First Search (深度優先搜尋)
+      2. Breadth First Search (廣度優先搜尋)
+      3. Connected Components (連通元件)
+      4. Spanning Trees (生成樹)
+      5. Biconnected Components (雙連通單元)
+   2. Minimum Cost Spanning Trees (最小生成樹)
+      1. Kruskal’s Algorithm (克魯斯克爾演算法)
+      2. Prim’s Algorithm (普林演算法)
+   3. Shortest Paths and Transitive Closure (最短路徑和傳遞閉包)
+      1. Single Source/All Destination: Nonnegative Edge Costs (一對多:無負權)
+      2. Single Source/All Destination: General Weights (一對多:有負權)
+      3. All-Pairs Shortest Paths (多對多)
+   4. Activity Networks (活動網絡)
+      1. Activity on Vertex (AOV) Networks (頂點活動網路)
+      2. Activity on Edge (AOV) Networks (邊活動網路)
 
-2. (a)撰寫初始為空的二元搜尋樹，進行 $n$ 次隨機插入，使用均勻亂數產生器取得插入值，測量樹高度，將此高度除以 $\log_2 n$針對
-   
-   $n = 100, 500, 1000, 2000, 3000, \cdots, 10,000$ 執行操作。
-   
-   將比值 $height/\log_2 n$ 繪製成 $n$ 的函數圖，該比值應該大約為2。
-   
-   (b)實做一個函式，從二元搜尋樹中刪除鍵值為 $k$ 的資料對 (pair)，問此函式的時間複雜度為何？
 ### 解題策略
 
 #### (1) Max/Min Heap
