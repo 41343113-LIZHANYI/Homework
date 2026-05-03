@@ -141,7 +141,7 @@
 
 ## 測試案例
 ### ud and uw (無向、無權重)
-#### (1) 測資一：綜合連通圖 
+####  測資一：綜合連通圖 
 | 原圖  | BFS 廣度優先搜尋 | DFS 深度優先搜尋 |
 | :---: | :---: | :---: |
 | <img src="https://github.com/user-attachments/assets/46e66031-a326-4fa1-a7f2-882d4a187ad3" width="100%" alt="tc1_original"> | <img src="https://github.com/user-attachments/assets/7bc3924a-d98e-447e-a255-f46a5ab67755" width="100%" alt="tc1_bfs"> | <img src="https://github.com/user-attachments/assets/5bffe9db-0fa7-43c3-bcee-974615cbd31b" width="100%" alt="tc1_dfs"> |
@@ -155,6 +155,35 @@
 | **生成樹** | (0,1) (1,2) (2,3) (3,4) (4,5) (5,6) | (0,1) (1,2) (2,3) (3,4) (4,5) (5,6) |
 | **連通元件 (CC)** | 群組 1: 0 1 2 3 4 5 6 | 群組 1: 0 1 2 3 4 5 6 |
 | **雙連通單元 (BCC)** | BCC 群組 1: (5,6)<br>BCC 群組 2: (5,3) (4,5) (3,4)<br>BCC 群組 3: (2,3)<br>BCC 群組 4: (2,0) (1,2) (0,1) | BCC 群組 1: (5,6)<br>BCC 群組 2: (5,3) (4,5) (3,4)<br>BCC 群組 3: (2,3)<br>BCC 群組 4: (2,0) (1,2) (0,1) |
+#### 測資二：離散森林
+| 原圖  | BFS 廣度優先搜尋 | DFS 深度優先搜尋 |
+| :---: | :---: | :---: |
+| <img width="2460" height="1859" alt="tc2_original" src="https://github.com/user-attachments/assets/5c054e29-10ac-4aab-a3c7-63d79a5527d1" />|<img width="2460" height="1859" alt="tc2_bfs" src="https://github.com/user-attachments/assets/144347ed-6a55-4034-bb17-a415947f7fea" />| <img width="2460" height="1859" alt="tc2_dfs" src="https://github.com/user-attachments/assets/82bf285d-d581-427b-ae47-b8a09423ea07" />|
+| 生成樹 | 連通元件 | 雙連通元件 |
+|<img width="2460" height="1859" alt="tc2_tree" src="https://github.com/user-attachments/assets/1895ff8d-8ac3-4f12-b8da-ab88a8901817" />|<img width="2460" height="1859" alt="tc2_cc" src="https://github.com/user-attachments/assets/01effc7d-e777-4a01-8c98-91862d1a9ccf" />|<img width="2460" height="1859" alt="tc2_bcc" src="https://github.com/user-attachments/assets/d2123c10-25fc-45f5-8a5a-8166982573aa" />|
+
+| 演算法 | Adjacency List 實作結果 | Adjacency Matrix 實作結果 |
+| :--- | :--- | :--- |
+| **BFS** | 0 1 2 | 0 1 2 |
+| **DFS** | 0 1 2 | 0 1 2 |
+| **生成樹** | (0,1) (1,2)<br>(3,4) (4,5)<br>(6,7) | (0,1) (1,2)<br>(3,4) (4,5)<br>(6,7) |
+| **連通元件 (CC)** | 群組 1: 0 1 2<br>群組 2: 3 4 5<br>群組 3: 6 7 | 群組 1: 0 1 2<br>群組 2: 3 4 5<br>群組 3: 6 7 |
+| **雙連通單元 (BCC)** | BCC 群組 1: (1,2)<br>BCC 群組 2: (0,1)<br>BCC 群組 3: (5,3) (4,5) (3,4)<br>BCC 群組 4: (6,7) | BCC 群組 1: (1,2)<br>BCC 群組 2: (0,1)<br>BCC 群組 3: (5,3) (4,5) (3,4)<br>BCC 群組 4: (6,7) |
+#### 測資三：星狀圖
+| 原圖  | BFS 廣度優先搜尋 | DFS 深度優先搜尋 |
+| :---: | :---: | :---: |
+|<img width="2460" height="1859" alt="tc3_original" src="https://github.com/user-attachments/assets/379eb4f6-7578-4ca8-bcd5-83dfe3e6cb7c" />|<img width="2460" height="1859" alt="tc3_bfs" src="https://github.com/user-attachments/assets/2560d5a5-3274-4880-a91c-dffde495660a" />|<img width="2460" height="1859" alt="tc3_dfs" src="https://github.com/user-attachments/assets/1bb0694b-c118-43be-ae3b-a9ef52a51985" />|
+| 生成樹 | 連通元件 | 雙連通元件 |
+|<img width="2460" height="1859" alt="tc3_tree" src="https://github.com/user-attachments/assets/66e78cfb-6e1a-48be-9e09-fc1a412c104e" />|<img width="2460" height="1859" alt="tc3_cc" src="https://github.com/user-attachments/assets/c519a107-e9a5-46fe-b8fe-e114d9a7ba57" />|<img width="2460" height="1859" alt="tc3_bcc" src="https://github.com/user-attachments/assets/e34eb32a-ea76-474a-b123-c97d53c9b57b" />|
+
+| 演算法 | Adjacency List 實作結果 | Adjacency Matrix 實作結果 |
+| :--- | :--- | :--- |
+| **BFS** | 0 1 2 3 4 | 0 1 2 3 4 |
+| **DFS** | 0 1 2 3 4 | 0 1 2 3 4 |
+| **生成樹** | (0,1) (0,2) (0,3) (0,4) | (0,1) (0,2) (0,3) (0,4) |
+| **連通元件 (CC)** | 群組 1: 0 1 2 3 4 | 群組 1: 0 1 2 3 4 |
+| **雙連通單元 (BCC)** | BCC 群組 1: (0,2)<br>BCC 群組 2: (0,3)<br>BCC 群組 3: (0,4)<br>BCC 群組 4: (0,1) | BCC 群組 1: (0,2)<br>BCC 群組 2: (0,3)<br>BCC 群組 3: (0,4)<br>BCC 群組 4: (0,1) |
+
 #### (2) BST 輸出
 <img width="412" height="337" alt="image" src="https://github.com/user-attachments/assets/3f3296c8-26d7-4bee-8d51-8a8f522cee1f" />
 
