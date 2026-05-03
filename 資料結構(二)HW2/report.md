@@ -1178,7 +1178,7 @@ int main(){
 
 |Dijkstra 最短路徑| Bellman-Ford 最短路徑 | Floyd-Warshall 全點對路徑 |
 | :---: | :---: | :--- |
-|<img width="3000" height="1805" alt="tc3_dijkstra" src="https://github.com/user-attachments/assets/e097e1ca-1480-4c16-a2f5-dc0eeb913f35" />|<img width="3000" <img width="3000" height="1800" alt="tc3_bellman" src="https://github.com/user-attachments/assets/2186a8f7-3613-47d3-b0da-9faaeed62c91" />|<img width="3000" height="1800" alt="tc3_floyd" src="https://github.com/user-attachments/assets/58e2e91b-8599-4401-86b4-0ec639ef05db" />|
+|<img width="3000" height="1805" alt="tc3_dijkstra" src="https://github.com/user-attachments/assets/e097e1ca-1480-4c16-a2f5-dc0eeb913f35" />|<img width="3000" height="1800" alt="tc3_bellman" src="https://github.com/user-attachments/assets/2186a8f7-3613-47d3-b0da-9faaeed62c91" />|<img width="3000" height="1800" alt="tc3_floyd" src="https://github.com/user-attachments/assets/58e2e91b-8599-4401-86b4-0ec639ef05db" />|
 |Dijkstra 陷入無窮迴圈|Bellman-Ford dp到最後檢測出負環|Floyd-Warshall dp到最後檢測出負環|
 ### (3) d and uw (有向、無權重)
 ### (4) d and w (有向、有權重)
