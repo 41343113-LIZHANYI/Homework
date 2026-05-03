@@ -34,7 +34,7 @@
 3. 連通元件 & 雙連通單元 (無向無權)
 4. Kruskal’s Algorithm & Prim’s Algorithm (無向有權)
 5. 一對多最短路徑:無負權 Dijkstra's Algorithm (有向有權、無向有權)
-6. 一對多最短路徑:有負權 Bellman-Ford Algorithm (有向有權)
+6. 一對多最短路徑:有負權 Bellman-Ford Algorithm (有向有權、無向有權)
 7. 多對多最短路徑 Floyd-Warshall Algorithm (有向有權、無向有權)
 8. 頂點活動網路 (有向無權)
 9. 邊活動網路 (有向有權)
