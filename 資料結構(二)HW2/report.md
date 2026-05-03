@@ -1192,9 +1192,9 @@ int main(){
     return 0;
 }
 ```
-#### (3) d and uw()
+#### (3) d and uw(有向、無權重:BFS、DFS、頂點活動網路)
 ``` c++
-   #include <iostream> //這份是有向無權圖
+#include <iostream> //這份是有向無權圖
 #include <vector>   //包含 BFS、DFS、頂點活動網路
 #include <algorithm> 
 #include <iterator>
