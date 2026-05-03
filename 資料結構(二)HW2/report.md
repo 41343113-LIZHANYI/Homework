@@ -147,6 +147,14 @@
 | <img src="https://github.com/user-attachments/assets/46e66031-a326-4fa1-a7f2-882d4a187ad3" width="100%" alt="tc1_original"> | <img src="https://github.com/user-attachments/assets/7bc3924a-d98e-447e-a255-f46a5ab67755" width="100%" alt="tc1_bfs"> | <img src="https://github.com/user-attachments/assets/5bffe9db-0fa7-43c3-bcee-974615cbd31b" width="100%" alt="tc1_dfs"> |
 | 生成樹 | 連通元件 | 雙連通元件 |
 | <img width="2460" height="1859" alt="tc1_tree" src="https://github.com/user-attachments/assets/828c60d7-8fba-485e-ad1c-ef8a41a126cf" /> | <img width="2460" height="1859" alt="tc1_cc" src="https://github.com/user-attachments/assets/ebaa68cd-0c0a-41f8-9829-a41ed69fb0ca" />| <img width="2460" height="1859" alt="tc1_bcc" src="https://github.com/user-attachments/assets/aed053dc-da01-4b6d-bd15-5c9027cdf796" />|
+
+| 演算法 | Adjacency List 實作結果 | Adjacency Matrix 實作結果 |
+| :--- | :--- | :--- |
+| **BFS** | 0 1 2 3 4 5 6 | 0 1 2 3 4 5 6 |
+| **DFS** | 0 1 2 3 4 5 6 | 0 1 2 3 4 5 6 |
+| **生成樹** | (0,1) (1,2) (2,3) (3,4) (4,5) (5,6) | (0,1) (1,2) (2,3) (3,4) (4,5) (5,6) |
+| **連通元件 (CC)** | 群組 1: 0 1 2 3 4 5 6 | 群組 1: 0 1 2 3 4 5 6 |
+| **雙連通單元 (BCC)** | BCC 群組 1: (5,6)<br>BCC 群組 2: (5,3) (4,5) (3,4)<br>BCC 群組 3: (2,3)<br>BCC 群組 4: (2,0) (1,2) (0,1) | BCC 群組 1: (5,6)<br>BCC 群組 2: (5,3) (4,5) (3,4)<br>BCC 群組 3: (2,3)<br>BCC 群組 4: (2,0) (1,2) (0,1) |
 #### (2) BST 輸出
 <img width="412" height="337" alt="image" src="https://github.com/user-attachments/assets/3f3296c8-26d7-4bee-8d51-8a8f522cee1f" />
 
