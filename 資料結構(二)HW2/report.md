@@ -1152,38 +1152,34 @@ int main(){
 | :---: | :---: | :--- |
 |<img width="3000" height="1800" alt="tc1_dijkstra" src="https://github.com/user-attachments/assets/12c25918-98c5-4f74-a580-332d7c23ed90" />|<img width="3000" height="1800" alt="tc1_bellman" src="https://github.com/user-attachments/assets/49cb9072-3747-49ac-b82e-a0ea1c357351" /> |<img width="3000" height="1800" alt="tc1_floyd" src="https://github.com/user-attachments/assets/a84650d4-8c70-4003-ae66-3f124f07bcee" />|
 #### 測資二：捷徑有權連通圖
-**測試重點**：設計一條長主幹與數條極具誘惑力的低成本捷徑，測試尋路演算法「聰明抄近路」的能力。
 
 | 原圖 (Original) | BFS 廣度優先搜尋 | DFS 深度優先搜尋 |
 | :---: | :---: | :---: |
-| <img src="你的原圖網址或路徑.png" width="100%"> | <img src="你的BFS圖網址或路徑.png" width="100%"> | <img src="你的DFS圖網址或路徑.png" width="100%"> |
-| **長主幹與捷徑的結構配置** | 步數最少，但不管權重成本 | 步數最多，也不管權重成本 |
+| <img width="3000" height="1805" alt="tc2_original" src="https://github.com/user-attachments/assets/f4050354-b0f0-4af9-8653-95ef88a67cab" />|<img width="3000" height="1805" alt="tc2_bfs" src="https://github.com/user-attachments/assets/0a39e6ff-5f3f-45fa-b1fb-561c9b5a0d30" />|<img width="3000" height="1805" alt="tc2_dfs" src="https://github.com/user-attachments/assets/7f0c8f23-cdce-4d46-9cfd-397acd8224c7" />|
 
-| Kruskal 最小生成樹 | Prim 最小生成樹 | Dijkstra 最短路徑 |
-| :---: | :---: | :---: |
-| <img src="你的Kruskal圖網址或路徑.png" width="100%"> | <img src="你的Prim圖網址或路徑.png" width="100%"> | <img src="你的Dijkstra圖網址或路徑.png" width="100%"> |
-| 優先抓取全圖最便宜的捷徑邊 | 遇到捷徑時會立刻切換擴張方向 | 完美避開昂貴主幹，精準切入捷徑 |
+| Kruskal 最小生成樹 | Prim 最小生成樹 |
+| :---: | :---: |
+| <img width="3000" height="1805" alt="tc2_kruskal" src="https://github.com/user-attachments/assets/fa31a62b-99d4-4e45-8cb3-700ed55e5d08" />| <img width="3000" height="1805" alt="tc2_prim" src="https://github.com/user-attachments/assets/98f6da25-eda6-4d3b-8a69-ba7f95c7b054" />| 
 
-| Bellman-Ford 最短路徑 | Floyd-Warshall 全點對路徑 | 💡 測資二 觀察總結 |
+|Dijkstra 最短路徑| Bellman-Ford 最短路徑 | Floyd-Warshall 全點對路徑 |
 | :---: | :---: | :--- |
-| <img src="你的Bellman圖網址或路徑.png" width="100%"> | <img src="你的Floyd圖網址或路徑.png" width="100%"> | <br><br>相比於無權圖的 BFS 只看「最少步數」，**Dijkstra** 展現了有權圖的精髓——寧可多繞幾個節點，只要總權重成本最低，就是最佳路徑。 |
+|<img width="3000" height="1805" alt="tc2_dijkstra" src="https://github.com/user-attachments/assets/a9ad032c-b515-4da7-94e6-cdf61bf842ee" />|<img width="3000" height="1800" alt="tc2_bellman" src="https://github.com/user-attachments/assets/765400e2-2db2-4daa-b58b-ccfdef971809" />|<img width="3000" height="1800" alt="tc2_floyd" src="https://github.com/user-attachments/assets/9ed799f5-aed7-41e5-a16d-53cb997c4ae0" />|
 
 #### 測資三：負權連通圖與負權迴圈
 **測試重點**：故意埋入致命的「負權重邊」，展示 Dijkstra 的侷限性，以及防呆專武演算法的糾錯能力。
 
 | 原圖 (Original) | BFS 廣度優先搜尋 | DFS 深度優先搜尋 |
 | :---: | :---: | :---: |
-| <img src="你的原圖網址或路徑.png" width="100%"> | <img src="你的BFS圖網址或路徑.png" width="100%"> | <img src="你的DFS圖網址或路徑.png" width="100%"> |
-| **圖中包含一條權重為 -10 的邊** | 正常走訪 (不受權重影響) | 正常走訪 (不受權重影響) |
+| <img width="3000" height="1805" alt="tc3_original" src="https://github.com/user-attachments/assets/558480a1-1f53-4680-a5cf-91babd35a666" />| <img width="3000" height="1805" alt="tc3_bfs" src="https://github.com/user-attachments/assets/5f552240-9b04-48d0-af25-2a30cc46f418" />| <img width="3000" height="1805" alt="tc3_dfs" src="https://github.com/user-attachments/assets/52368588-389f-472b-8ad8-d1ca41762606" />|
 
-| Kruskal 最小生成樹 | Prim 最小生成樹 | Dijkstra 最短路徑 |
-| :---: | :---: | :---: |
-| <img src="你的Kruskal圖網址或路徑.png" width="100%"> | <img src="你的Prim圖網址或路徑.png" width="100%"> | <img src="你的Dijkstra圖網址或路徑.png" width="100%"> |
-| 對負數免疫：視為極便宜的邊 | 對負數免疫：毫不猶豫納入樹中 | **演算法崩潰**：無法處理倒貼成本 |
+| Kruskal 最小生成樹 | Prim 最小生成樹 |
+| :---: | :---: |
+|<img width="3000" height="1805" alt="tc3_kruskal" src="https://github.com/user-attachments/assets/df5b2c0f-6254-4c50-a163-e05b8a2633a4" />|<img width="3000" height="1805" alt="tc3_prim" src="https://github.com/user-attachments/assets/4bf4c50b-4548-496c-bead-65b6fd25f946" />| 
 
-| Bellman-Ford 最短路徑 | Floyd-Warshall 全點對路徑 | 測 পণ্ডিত資三 觀察總結 |
+|Dijkstra 最短路徑| Bellman-Ford 最短路徑 | Floyd-Warshall 全點對路徑 |
 | :---: | :---: | :--- |
-| <img src="你的Bellman圖網址或路徑.png" width="100%"> | <img src="你的Floyd圖網址或路徑.png" width="100%"> | <br><br>在無向圖中，負權邊會直接導致**負權迴圈**。Bellman-Ford 與 Floyd-Warshall 皆成功在迴圈中觸發防呆機制，並印出錯誤警告，避免陷入無限扣分的死胡同！ |
+|<img width="3000" height="1805" alt="tc3_dijkstra" src="https://github.com/user-attachments/assets/e097e1ca-1480-4c16-a2f5-dc0eeb913f35" />|<img width="3000" <img width="3000" height="1800" alt="tc3_bellman" src="https://github.com/user-attachments/assets/2186a8f7-3613-47d3-b0da-9faaeed62c91" />|<img width="3000" height="1800" alt="tc3_floyd" src="https://github.com/user-attachments/assets/58e2e91b-8599-4401-86b4-0ec639ef05db" />|
+|Dijkstra 陷入無窮迴圈|Bellman-Ford dp到最後檢測出負環|Floyd-Warshall dp到最後檢測出負環|
 ### (3) d and uw (有向、無權重)
 ### (4) d and w (有向、有權重)
 ### 結論
