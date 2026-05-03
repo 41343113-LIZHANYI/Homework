@@ -579,9 +579,490 @@ int main(){
     return 0;
 }  
 ```
-#### (2) ud and w()
+#### (2) ud and w(無向、無權重:BFS、DFS、Kruskal、Prim、Dijkstra、Bellman-Ford、Floyd)
 ``` c++
+#include <iostream> //這份是無向有權圖
+#include <vector>   //包含 BFS、DFS、Kruskal、Prim、Dijkstra、Bellman-Ford、Floyd
+#include <algorithm>
+#include <queue> 
+#include <stack>
+#include <utility> //for pair
+using namespace std;
+const int INF=1e9; //無限代表沒有連接
+struct Edge{
+    int u,v,w; //w為權重
+};
 
+class Graph{
+private:
+    int n;
+    int e;
+    vector<pair<int,int>>* adj; //u->(v,w)
+    vector<vector<int>> matrix; //有權bool->int
+public:
+    Graph(int nodes):n(nodes),e(0){
+        adj=new vector<pair<int,int>>[n];
+        matrix.resize(n,vector<int>(n,INF)); //初始INF
+        for(int i=0;i<n;++i)
+            matrix[i][i]=0; //自己無距離
+    }
+    virtual ~Graph(){
+        delete[] adj; 
+    }
+    bool IsEmpty() const{
+        return n==0;
+    }
+    int NumberOfVertices() const{
+        return n;
+    }
+    int NumberOfEdges() const{
+        return e;
+    }
+    virtual int Degree(int u) const{ 
+        if(u<0||u>=n)return 0;
+        int adj_list_degree=adj[u].size(); 
+        
+        int matrix_degree=0;
+        for(int i=0;i<n;++i){
+            if(matrix[u][i]!=INF&&i!=u) //非INF && 不是自己
+                ++matrix_degree;  
+        }
+
+        if(adj_list_degree!=matrix_degree)
+            throw "操作錯誤:度數不相等";
+
+        return adj_list_degree;
+    }
+    virtual bool ExistsEdge(int u,int v) const{
+        if(u<0||u>=n||v<0||v>=n)return 0;
+
+        bool adj_list_exist=0; 
+        for(auto& nei:adj[u]){ //pair遍歷
+            if(nei.first==v){
+                adj_list_exist=1;
+                break;
+            }
+        }
+
+        bool matrix_exist=(matrix[u][v]!=INF);//直接檢查是不是INF
+
+        if(adj_list_exist!=matrix_exist)
+            throw "操作錯誤:存在狀態不一";
+
+        return adj_list_exist;
+    }
+    virtual void InsertVertex(int v){ 
+        if(v>=n){ 
+            int new_n=v+1;
+
+            vector<pair<int,int>>* new_adj=new vector<pair<int,int>>[new_n]; 
+            for(int i=0;i<n;++i){
+                new_adj[i]=adj[i];
+            }
+            delete[] adj;
+            adj=new_adj;
+
+            matrix.resize(new_n); 
+            for(int i=0;i<new_n;++i){
+                matrix[i].resize(new_n,INF);
+                matrix[i][i]=0;
+            }
+            n=new_n;
+        }
+    }
+    virtual void InsertEdge(int u,int v,int w){ 
+        if(u<0||u>=n||v<0||v>=n)return;
+        
+        if(!ExistsEdge(u,v)){ 
+            adj[u].push_back({v,w});//打包成pair存入
+            adj[v].push_back({u,w});
+            matrix[u][v]=w; 
+            matrix[v][u]=w;
+            ++e;
+        }
+    }
+    virtual void DeleteVertex(int v){
+        if(v<0||v>=n)return;
+
+        for(auto& nei:adj[v]){ //遍歷v的鄰居u
+            int u=nei.first;
+            for(auto it=adj[u].begin();it!=adj[u].end();++it){ //從u找和v的連接
+                if(it->first==v){
+                    adj[u].erase(it); //找到就直接刪除
+                    break; 
+                }
+            }
+            --e;
+        }
+        for(int i=v;i<n-1;++i)
+            adj[i]=adj[i+1];
+            
+        for(int i=0;i<n-1;++i){ 
+            for(auto& target:adj[i]){
+                if(target.first>v)
+                    --target.first;
+            }
+        }
+
+        matrix.erase(matrix.begin()+v);
+        for(int i=0;i<matrix.size();++i)
+            matrix[i].erase(matrix[i].begin()+v);
+
+        --n;
+    }
+    virtual void DeleteEdge(int u,int v){
+        if(u<0||u>=n||v<0||v>=n)
+            return;
+        bool edgeFound=0;
+        for(auto it=adj[u].begin();it!=adj[u].end();++it){
+            if(it->first==v){
+                adj[u].erase(it);
+                edgeFound=1;
+                break;
+            }
+        }
+        for(auto it=adj[v].begin();it!=adj[v].end();++it){
+            if(it->first==u){
+                adj[v].erase(it);
+                edgeFound=1;
+                break;
+            }
+        }
+        if(edgeFound){ 
+            matrix[u][v]=INF;
+            matrix[v][u]=INF;
+            --e;
+        }
+    }
+    void showMartix(){
+        for(int k=0;k<n;++k){
+            cout<<k<<" ";
+        }
+        cout<<'\n';
+        for(int i=0;i<n;++i){
+            for(int j=0;j<n;++j){
+                if(matrix[i][j]==INF)cout<<"X "; //沒有連接
+                else cout<<matrix[i][j]<<" ";
+            }
+            cout<<'\n';
+        }
+    }
+    void showArraylist(){
+        for(int i=0;i<n;++i){ 
+            cout<<i<<": ";
+            for(auto& nei:adj[i])
+                cout<<"("<<nei.first<<",w:"<<nei.second<<") ";
+            cout<<'\n';
+        }
+    }
+    //1.BFS
+    void BFS_List(int start){
+        cout<<"[Adj List] BFS: ";
+        if(start<0||start>=n)return;
+        vector<bool> visited(n,0);
+        queue<int> q;
+        visited[start]=1;
+        q.push(start);
+        while(!q.empty()){
+            int u=q.front(); 
+            q.pop();
+            cout<<u<<" ";
+            for(auto& nei:adj[u]){ 
+                int v=nei.first;
+                if(!visited[v]){
+                    visited[v]=1;
+                    q.push(v);
+                }
+            }
+        }
+        cout<<'\n';
+    }
+    void BFS_Matrix(int start){
+        cout<<"[Matrix] BFS: ";
+        if(start<0||start>=n)return;
+        vector<bool> visited(n,0);
+        queue<int> q;
+        
+        visited[start]=1;
+        q.push(start);
+        
+        while(!q.empty()){
+            int u=q.front();
+            q.pop();
+            cout<<u<<" ";
+            for(int v=0;v<n;++v){ 
+                if(matrix[u][v]!=INF&&!visited[v]){ 
+                    visited[v]=1;
+                    q.push(v);
+                }
+            }
+        }
+        cout<<'\n';
+    }
+    //2.DFS
+    void DFSUtil_List(int u,vector<bool>& visited){
+        visited[u]=1;
+        cout<<u<<" ";    
+        for(auto& nei:adj[u]){ 
+            int v=nei.first;
+            if(!visited[v])
+                DFSUtil_List(v,visited); 
+        }
+    }
+    void DFS_List(int start){
+        cout<<"[List] DFS: ";
+        vector<bool> visited(n,0);
+        DFSUtil_List(start,visited);
+        cout<<'\n';
+    }
+    void DFSUtil_Matrix(int u,vector<bool>& visited){
+        visited[u]=1;
+        cout<<u<<" ";    
+        for(int v=0;v<n;++v){
+            if(matrix[u][v]!=INF&&!visited[v])
+                DFSUtil_Matrix(v,visited);
+        }
+    }
+    void DFS_Matrix(int start){
+        cout<<"[Matrix] DFS: ";
+        vector<bool> visited(n,0);
+        DFSUtil_Matrix(start,visited);
+        cout<<'\n';
+    }
+    //3.Kruskal 最小生成樹
+    int findParent(int i,vector<int>& parent){
+        if(parent[i]==i)return i;
+        return parent[i]=findParent(parent[i],parent);
+    }
+    void Kruskal(){
+        cout<<"[Kruskal] 最小生成樹:\n";
+        vector<Edge> edges;
+        for(int i=0;i<n;++i){
+            for(auto& nei:adj[i]){
+                if(i<nei.first) //避免重複加邊
+                    edges.push_back({i,nei.first,nei.second});
+            }
+        }
+        sort(edges.begin(),edges.end(),[](const Edge& a,const Edge& b){return a.w<b.w;}); //避免多使用函式這裡用lambda
+
+        vector<int> parent(n);
+        for(int i=0;i<n;++i)parent[i]=i;
+
+        int totalCost=0;
+        int edgeCount=0;
+        for(auto& e:edges){
+            int rootU=findParent(e.u,parent);
+            int rootV=findParent(e.v,parent);
+            if(rootU!=rootV){ //不會形成迴圈
+                parent[rootU]=rootV;
+                cout<<"("<<e.u<<","<<e.v<<") w:"<<e.w<<'\n';
+                totalCost+=e.w;
+                ++edgeCount;
+                if(edgeCount==n-1)break;
+            }
+        }
+        cout<<"總權重: "<<totalCost<<'\n';
+    }
+
+    //4.Prim 最小生成樹
+    void Prim(int start){
+        cout<<"[Prim] 最小生成樹 (起點 "<<start<<"):\n";
+        if(start<0||start>=n)return;
+        vector<int> key(n,INF);
+        vector<int> parent(n,-1);
+        vector<bool> inMST(n,0);
+        //優先佇列存放 pair<權重,頂點>
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
+        key[start]=0;
+        pq.push({0,start});
+        int totalCost=0;
+        while(!pq.empty()){
+            int u=pq.top().second;
+            pq.pop();
+            if(inMST[u])continue;
+            inMST[u]=1;
+            if(parent[u]!=-1){
+                cout<<"("<<parent[u]<<","<<u<<") w:"<<key[u]<<'\n';
+                totalCost+=key[u];
+            }
+            for(auto& nei:adj[u]){
+                int v=nei.first;
+                int w=nei.second;
+                if(!inMST[v]&&w<key[v]){
+                    key[v]=w;
+                    parent[v]=u;
+                    pq.push({w,v});
+                }
+            }
+        }
+        cout<<"總權重: "<<totalCost<<'\n';
+    }
+    //5.Dijkstra 
+    void Dijkstra(int start){
+        cout<<"[Dijkstra] 最短路徑 (起點 "<<start<<"):\n";
+        if(start<0||start>=n)return;
+        vector<int> dist(n,INF);
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
+        dist[start]=0;
+        pq.push({0,start});
+        while(!pq.empty()){
+            int d=pq.top().first;
+            int u=pq.top().second;
+            pq.pop();
+            if(d>dist[u])continue;
+            for(auto& nei:adj[u]){
+                int v=nei.first;
+                int w=nei.second;
+                if(dist[u]+w<dist[v]){
+                    dist[v]=dist[u]+w;
+                    pq.push({dist[v],v});
+                }
+            }
+        }
+        for(int i=0;i<n;++i){
+            if(dist[i]==INF)cout<<"到 "<<i<<": INF\n";
+            else cout<<"到 "<<i<<": "<<dist[i]<<'\n';
+        }
+    }
+
+    //6.Bellman-Ford (負權+迴圈)
+    void BellmanFord(int start){
+        cout<<"[Bellman-Ford] 最短路徑 (起點 "<<start<<"):\n";
+        if(start<0||start>=n)return;
+        vector<int> dist(n,INF);
+        dist[start]=0;
+
+        vector<Edge> edges;
+        for(int u=0;u<n;++u){
+            for(auto& nei:adj[u]){
+                edges.push_back({u,nei.first,nei.second}); //無向圖會把雙向都加進去
+            }
+        }
+        for(int i=0;i<n-1;++i){//V-1次
+            for(auto& e:edges){
+                if(dist[e.u]!=INF&&dist[e.u]+e.w<dist[e.v]){
+                    dist[e.v]=dist[e.u]+e.w;
+                }
+            }
+        }
+        //第V次檢查負權迴圈
+        for(auto& e:edges){
+            if(dist[e.u]!=INF&&dist[e.u]+e.w<dist[e.v]){
+                cout<<"圖中存在負迴圈\n";
+                return;
+            }
+        }
+
+        for(int i=0;i<n;++i){
+            if(dist[i]==INF)
+                cout<<"到 "<<i<<": INF\n";
+            else
+                cout<<"到 "<<i<<": "<<dist[i]<<'\n';
+        }
+    }
+    //7.Floyd 多對多最短路徑
+    void FloydWarshall(){
+        cout<<"[Floyd-Warshall] 任兩點最短路徑矩陣:\n";
+        vector<vector<int>> dist=matrix;
+        for(int k=0;k<n;++k){ //用dp方式更新
+            for(int i=0;i<n;++i){
+                for(int j=0;j<n;++j){
+                    if(dist[i][k]!=INF&&dist[k][j]!=INF&&dist[i][k]+dist[k][j]<dist[i][j]){
+                        dist[i][j]=dist[i][k]+dist[k][j];
+                    }
+                }
+            }
+        }
+        //對角線小於0代表有負權迴圈
+        for(int i=0;i<n;++i){
+            if(dist[i][i]<0){
+                cout<<"圖中存在負迴圈\n";
+                return;
+            }
+        }
+        for(int i=0;i<n;++i){
+            for(int j=0;j<n;++j){
+                if(dist[i][j]==INF)cout<<"X ";
+                else cout<<dist[i][j]<<" ";
+            }
+            cout<<'\n';
+        }
+    }
+};
+int main(){
+    cout<<"測資一:綜合有權連通圖\n";
+    Graph g1(10);
+    g1.InsertEdge(0,1,4);
+    g1.InsertEdge(0,7,8);
+    g1.InsertEdge(1,2,12);
+    g1.InsertEdge(1,7,11);
+    g1.InsertEdge(2,3,7);
+    g1.InsertEdge(2,8,2);
+    g1.InsertEdge(2,5,5);
+    g1.InsertEdge(3,4,9);
+    g1.InsertEdge(3,5,14);
+    g1.InsertEdge(4,5,10);
+    g1.InsertEdge(5,6,3);
+    g1.InsertEdge(6,7,1);
+    g1.InsertEdge(6,8,6);
+    g1.InsertEdge(7,8,13);
+    g1.InsertEdge(8,9,15);
+    g1.InsertEdge(2,9,16);
+    g1.BFS_List(0);//1
+    g1.DFS_List(0);//2
+    g1.Kruskal();//3
+    g1.Prim(0);//4
+    g1.Dijkstra(0);//5
+    g1.BellmanFord(0);//6
+    g1.FloydWarshall();//7
+    cout<<'\n';
+
+    cout<<"測資二:捷徑有權連通圖\n";
+    Graph g2(10);
+    g2.InsertEdge(0,1,10);
+    g2.InsertEdge(1,2,11);
+    g2.InsertEdge(2,3,12);
+    g2.InsertEdge(3,4,13);
+    g2.InsertEdge(4,5,14);
+    g2.InsertEdge(5,6,15);
+    g2.InsertEdge(6,7,16);
+    g2.InsertEdge(7,8,17);
+    g2.InsertEdge(8,9,18);
+    g2.InsertEdge(0,4,25); 
+    g2.InsertEdge(4,9,45); 
+    g2.InsertEdge(2,7,30); 
+    g2.BFS_List(0);
+    g2.DFS_List(0);
+    g2.Kruskal();
+    g2.Prim(0);
+    g2.Dijkstra(0);
+    g2.BellmanFord(0);
+    g2.FloydWarshall();
+    cout<<'\n';
+
+    cout<<"測資三:負權(負迴圈)連通圖\n";
+    Graph g3(10);
+    g3.InsertEdge(0,1,5);
+    g3.InsertEdge(1,2,8);
+    g3.InsertEdge(2,3,12);
+    g3.InsertEdge(3,4,6);
+    g3.InsertEdge(4,5,-10); 
+    g3.InsertEdge(5,6,3);
+    g3.InsertEdge(6,7,7);
+    g3.InsertEdge(7,8,19);
+    g3.InsertEdge(8,9,4);
+    g3.InsertEdge(1,9,20);
+    g3.BFS_List(0);
+    g3.DFS_List(0);
+    g3.Kruskal();
+    g3.Prim(0);
+    //g3.Dijkstra(0); 會出錯導致無窮迴圈
+    g3.BellmanFord(0);  //跳出警告
+    g3.FloydWarshall(); //跳出警告
+    cout<<'\n';
+
+    return 0;
+}
 ```
 #### (3) d and uw()
 ``` c++
@@ -658,6 +1139,51 @@ int main(){
 | **雙連通單元 (BCC)** | BCC 群組 1: (0,2)<br>BCC 群組 2: (0,3)<br>BCC 群組 3: (0,4)<br>BCC 群組 4: (0,1) | BCC 群組 1: (0,2)<br>BCC 群組 2: (0,3)<br>BCC 群組 3: (0,4)<br>BCC 群組 4: (0,1) |
 
 ### (2) ud and w (無向、有權重)
+#### 測資一：綜合有權連通圖
+| 原圖 (Original) | BFS 廣度優先搜尋 | DFS 深度優先搜尋 |
+| :---: | :---: | :---: |
+| <img width="3000" height="1800" alt="tc1_original" src="https://github.com/user-attachments/assets/a284f5c7-5d29-4451-ba40-f3a5cee8ebdf" />| <img width="3000" height="1800" alt="tc1_bfs" src="https://github.com/user-attachments/assets/16eef40b-0083-4e77-8584-c37f1bd6d846" />| <img width="3000" height="1800" alt="tc1_dfs" src="https://github.com/user-attachments/assets/ccbf77a8-0f2d-4bda-b49c-e68a81464863" />|
+
+| Kruskal 最小生成樹 | Prim 最小生成樹 |
+| :---: | :---: |
+| <img width="3000" height="1800" alt="tc1_kruskal" src="https://github.com/user-attachments/assets/c730c39e-56fb-4049-bdea-183c17c1c2f2" />| <img width="3000" height="1800" alt="tc1_prim" src="https://github.com/user-attachments/assets/a374916b-6c93-4d42-8e92-17c075d69a5b" />| 
+
+|Dijkstra 最短路徑| Bellman-Ford 最短路徑 | Floyd-Warshall 全點對路徑 |
+| :---: | :---: | :--- |
+|<img width="3000" height="1800" alt="tc1_dijkstra" src="https://github.com/user-attachments/assets/12c25918-98c5-4f74-a580-332d7c23ed90" />|<img width="3000" height="1800" alt="tc1_bellman" src="https://github.com/user-attachments/assets/49cb9072-3747-49ac-b82e-a0ea1c357351" /> |<img width="3000" height="1800" alt="tc1_floyd" src="https://github.com/user-attachments/assets/a84650d4-8c70-4003-ae66-3f124f07bcee" />|
+#### 測資二：捷徑有權連通圖
+**測試重點**：設計一條長主幹與數條極具誘惑力的低成本捷徑，測試尋路演算法「聰明抄近路」的能力。
+
+| 原圖 (Original) | BFS 廣度優先搜尋 | DFS 深度優先搜尋 |
+| :---: | :---: | :---: |
+| <img src="你的原圖網址或路徑.png" width="100%"> | <img src="你的BFS圖網址或路徑.png" width="100%"> | <img src="你的DFS圖網址或路徑.png" width="100%"> |
+| **長主幹與捷徑的結構配置** | 步數最少，但不管權重成本 | 步數最多，也不管權重成本 |
+
+| Kruskal 最小生成樹 | Prim 最小生成樹 | Dijkstra 最短路徑 |
+| :---: | :---: | :---: |
+| <img src="你的Kruskal圖網址或路徑.png" width="100%"> | <img src="你的Prim圖網址或路徑.png" width="100%"> | <img src="你的Dijkstra圖網址或路徑.png" width="100%"> |
+| 優先抓取全圖最便宜的捷徑邊 | 遇到捷徑時會立刻切換擴張方向 | 完美避開昂貴主幹，精準切入捷徑 |
+
+| Bellman-Ford 最短路徑 | Floyd-Warshall 全點對路徑 | 💡 測資二 觀察總結 |
+| :---: | :---: | :--- |
+| <img src="你的Bellman圖網址或路徑.png" width="100%"> | <img src="你的Floyd圖網址或路徑.png" width="100%"> | <br><br>相比於無權圖的 BFS 只看「最少步數」，**Dijkstra** 展現了有權圖的精髓——寧可多繞幾個節點，只要總權重成本最低，就是最佳路徑。 |
+
+#### 測資三：負權連通圖與負權迴圈
+**測試重點**：故意埋入致命的「負權重邊」，展示 Dijkstra 的侷限性，以及防呆專武演算法的糾錯能力。
+
+| 原圖 (Original) | BFS 廣度優先搜尋 | DFS 深度優先搜尋 |
+| :---: | :---: | :---: |
+| <img src="你的原圖網址或路徑.png" width="100%"> | <img src="你的BFS圖網址或路徑.png" width="100%"> | <img src="你的DFS圖網址或路徑.png" width="100%"> |
+| **圖中包含一條權重為 -10 的邊** | 正常走訪 (不受權重影響) | 正常走訪 (不受權重影響) |
+
+| Kruskal 最小生成樹 | Prim 最小生成樹 | Dijkstra 最短路徑 |
+| :---: | :---: | :---: |
+| <img src="你的Kruskal圖網址或路徑.png" width="100%"> | <img src="你的Prim圖網址或路徑.png" width="100%"> | <img src="你的Dijkstra圖網址或路徑.png" width="100%"> |
+| 對負數免疫：視為極便宜的邊 | 對負數免疫：毫不猶豫納入樹中 | **演算法崩潰**：無法處理倒貼成本 |
+
+| Bellman-Ford 最短路徑 | Floyd-Warshall 全點對路徑 | 測 পণ্ডিত資三 觀察總結 |
+| :---: | :---: | :--- |
+| <img src="你的Bellman圖網址或路徑.png" width="100%"> | <img src="你的Floyd圖網址或路徑.png" width="100%"> | <br><br>在無向圖中，負權邊會直接導致**負權迴圈**。Bellman-Ford 與 Floyd-Warshall 皆成功在迴圈中觸發防呆機制，並印出錯誤警告，避免陷入無限扣分的死胡同！ |
 ### (3) d and uw (有向、無權重)
 ### (4) d and w (有向、有權重)
 ### 結論
