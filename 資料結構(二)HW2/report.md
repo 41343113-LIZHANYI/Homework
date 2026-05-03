@@ -1702,10 +1702,9 @@ int main(){
 #### 測資一：標準有向無環圖測試
 | 原圖 | AOV 拓撲排序 |
 | :---: | :---: |
-| 
-| <img width="800" alt="tc1_aov" src="你的GitHub圖片連結/tc1_standard_aov.png" /> |
+| <img width="3060" height="1859" alt="tc1_original" src="https://github.com/user-attachments/assets/20dc1cf1-1591-4708-bbaa-4edb89f8a7be" />|<img width="3060" height="1772" alt="tc1_standard_aov" src="https://github.com/user-attachments/assets/70c647d5-7718-4ca7-becc-04d1d4419ca1" />|
 | **BFS 廣度優先搜尋** | **DFS 深度優先搜尋** |
-| <img width="800" alt="tc1_bfs" src="你的GitHub圖片連結/tc1_standard_bfs.png" /> | <img width="800" alt="tc1_dfs" src="你的GitHub圖片連結/tc1_standard_dfs.png" /> |
+| <img width="3060" height="1859" alt="tc1_standard_bfs" src="https://github.com/user-attachments/assets/dde0647f-53e1-4c36-9e3f-0598f049f6c4" /> | <img width="3060" height="1859" alt="tc1_standard_dfs" src="https://github.com/user-attachments/assets/340ad0d5-c862-4083-8515-26486e28e005" />|
 
 | 演算法 | Adjacency List 實作結果 | Adjacency Matrix 實作結果 |
 | :--- | :--- | :--- |
@@ -1715,9 +1714,9 @@ int main(){
 #### 測資二：多源圖測試
 | 原圖 | AOV 拓撲排序 |
 | :---: | :---: |
-| | <img width="800" alt="tc2_aov" src="你的GitHub圖片連結/tc2_multisource_aov.png" /> |
+| <img width="3060" height="1859" alt="tc2_multisource_original" src="https://github.com/user-attachments/assets/5f2fc738-44b9-442e-9332-2faa338b0ef9" />| <img width="3060" height="1772" alt="tc2_multisource_aov" src="https://github.com/user-attachments/assets/df9d07b8-9598-4dad-a1e3-4e04da63869a" />|
 | **BFS 廣度優先搜尋** | **DFS 深度優先搜尋** |
-| <img width="800" alt="tc2_bfs" src="你的GitHub圖片連結/tc2_multisource_bfs.png" /> | <img width="800" alt="tc2_dfs" src="你的GitHub圖片連結/tc2_multisource_dfs.png" /> |
+| <img width="3060" height="1859" alt="tc2_multisource_bfs" src="https://github.com/user-attachments/assets/e02daca3-cdc9-4ba5-8219-a6e297ed5cab" />|<img width="3060" height="1859" alt="tc2_multisource_dfs" src="https://github.com/user-attachments/assets/c5966b52-c556-48a7-914b-cf1eaed59f70" />|
 
 | 演算法 | Adjacency List 實作結果 | Adjacency Matrix 實作結果 |
 | :--- | :--- | :--- |
@@ -1727,9 +1726,9 @@ int main(){
 #### 測資三：交錯相依圖測試
 | 原圖 | AOV 拓撲排序 |
 | :---: | :---: |
-| <img width="800" alt="tc3_original" src="你的GitHub圖片連結/tc3_interdependent_original.png" /> | <img width="800" alt="tc3_aov" src="你的GitHub圖片連結/tc3_interdependent_aov.png" /> |
+| <img width="3060" height="1859" alt="tc3_interdependent_original" src="https://github.com/user-attachments/assets/e4d75c01-a89b-47aa-95c3-feb9f69b4f4a" />| <img width="3060" height="1849" alt="tc3_interdependent_aov" src="https://github.com/user-attachments/assets/4fd4162c-256d-41ab-bd45-341bfd8ccf34" />|
 | **BFS 廣度優先搜尋** | **DFS 深度優先搜尋** |
-| <img width="800" alt="tc3_bfs" src="你的GitHub圖片連結/tc3_interdependent_bfs.png" /> | <img width="800" alt="tc3_dfs" src="你的GitHub圖片連結/tc3_interdependent_dfs.png" /> |
+| <img width="3060" height="1859" alt="tc3_interdependent_bfs" src="https://github.com/user-attachments/assets/3780cc9b-29de-4fe0-a99a-6e51da857ed6" />| <img width="3060" height="1859" alt="tc3_interdependent_dfs" src="https://github.com/user-attachments/assets/6470c9c2-64b1-465e-92ea-b71f9386e3d9" />|
 
 | 演算法 | Adjacency List 實作結果 | Adjacency Matrix 實作結果 |
 | :--- | :--- | :--- |
