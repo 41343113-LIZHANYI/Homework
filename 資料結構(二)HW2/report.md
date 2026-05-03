@@ -579,10 +579,10 @@ int main(){
     return 0;
 }  
 ```
-#### (2) ud and w(無向、無權重:BFS、DFS、Kruskal、Prim、Dijkstra、Bellman-Ford、Floyd)
+#### (2) ud and w(無向、有權重:BFS、DFS、Kruskal、Prim、Dijkstra、Bellman-Ford、Floyd)
 ``` c++
-#include <iostream>
-#include <vector>
+#include <iostream> //這份是無向有權圖
+#include <vector> //包含BFS、DFS、Kruskal、Prim、Dijkstra、Bellman-Ford、Floyd
 #include <algorithm>
 #include <queue> 
 #include <stack>
