@@ -139,43 +139,14 @@
       * 時間複雜度： $O(\log n)$ //最壞情況 $O(n)$
       * 空間複雜度： $O(h)$ 
 
-### 測試案例
-
-#### (1) Max/Min Heap
-<table>
-  <tr>
-    <td align="center"><b>1.</b><br><img src="https://github.com/user-attachments/assets/224d2914-55cf-46cb-96b5-5c2b69290dc2" width="250"></td>
-    <td align="center"><b>2.</b><br><img src="https://github.com/user-attachments/assets/e6f8a59d-4017-4925-8d88-ff265cc7a817" width="250"></td>
-    <td align="center"><b>3.</b><br><img src="https://github.com/user-attachments/assets/c4fb585e-3354-402e-8b75-00f9c7a23490" width="250"></td>
-  </tr>
-</table>
-
-### 輸入
-| 測試項目 | 時間測試隨機測資數 n | 手動建樹資料量 n | 輸入 n 個資料 |
-|-------------|--------------------------|--------------------|-------------------|
-| 1: n個隨機資料時間測試&&基礎建樹測試 | 1000000 | 5 | 20 15 30 5 10 |
-| 2: n個隨機資料時間測試&&遞增數列測試 | 2000000 | 6 | 10 20 30 40 50 60 |
-| 3: n個隨機資料時間測試&&遞減數列測試 | 3000000 | 6 | 60 50 40 30 20 10 |
-
-### 預期輸出
-| 測試項目 | 執行n次 Push && Pop耗費 | Push()n次建樹的輸出 | Pop()執行後的樹狀態輸出 | IsEmpty()測試輸出 |
-|-------------|-----------------------------|-------------------------|-----------------------------|-------------------|
-| 1: n個隨機資料時間測試&&基礎建樹測試(MaxHeap) | ~0.2秒 | 30 15 20 5 10 | 20 15 10 5 | 0 |
-| 1: n個隨機資料時間測試&&基礎建樹測試(MinHeap) | ~0.2秒 | 5 10 30 20 15 | 10 15 30 20 | 0 |
-| 2: n個隨機資料時間測試&&遞增數列測試(MaxHeap) | ~0.45秒 | 60 40 50 10 30 20 | 50 40 20 10 30 | 0 |
-| 2: n個隨機資料時間測試&&遞增數列測試(MinHeap) | ~0.45秒 | 10 20 30 40 50 60 | 20 40 30 60 50 | 0 |
-| 3: n個隨機資料時間測試&&遞減數列測試(MaxHeap) | ~0.7秒 | 60 50 40 30 20 10 | 50 30 40 10 20 | 0 |
-| 3: n個隨機資料時間測試&&遞減數列測試(MinHeap) | ~0.7秒 | 10 30 20 60 40 50 | 20 30 50 60 40 | 0 |
-
-### 實際輸出
-| 測試項目 | 執行n次 Push && Pop耗費 | Push()n次建樹的輸出 | Pop()執行後的樹狀態輸出 | IsEmpty()測試輸出 |
-|-------------|-----------------------------|-------------------------|-----------------------------|-------------------|
-| 1: n個隨機資料時間測試&&基礎建樹測試(MaxHeap) | 0.217252秒 | 30 15 20 5 10 | 20 15 10 5 | 0 |
-| 1: n個隨機資料時間測試&&基礎建樹測試(MinHeap) | 0.199989秒 | 5 10 30 20 15 | 10 15 30 20 | 0 |
-| 2: n個隨機資料時間測試&&遞增數列測試(MaxHeap) | 0.452087秒 | 60 40 50 10 30 20 | 50 40 20 10 30 | 0 |
-| 2: n個隨機資料時間測試&&遞增數列測試(MinHeap) | 0.499431秒 | 10 20 30 40 50 60 | 20 40 30 60 50 | 0 |
-| 3: n個隨機資料時間測試&&遞減數列測試(MaxHeap) | 0.713117秒 | 60 50 40 30 20 10 | 50 30 40 10 20 | 0 |
-| 3: n個隨機資料時間測試&&遞減數列測試(MinHeap) | 0.715542秒 | 10 30 20 60 40 50 | 20 30 50 60 40 | 0 |
+## 測試案例
+### ud and uw (無向、無權重)
+#### (1) 測資一：綜合連通圖 
+| 原圖  | BFS 廣度優先搜尋 | DFS 深度優先搜尋 |
+| :---: | :---: | :---: |
+| <img src="https://github.com/user-attachments/assets/46e66031-a326-4fa1-a7f2-882d4a187ad3" width="100%" alt="tc1_original"> | <img src="https://github.com/user-attachments/assets/7bc3924a-d98e-447e-a255-f46a5ab67755" width="100%" alt="tc1_bfs"> | <img src="https://github.com/user-attachments/assets/5bffe9db-0fa7-43c3-bcee-974615cbd31b" width="100%" alt="tc1_dfs"> |
+| 生成樹 | 連通元件 | 雙連通元件 |
+| <img width="2460" height="1859" alt="tc1_tree" src="https://github.com/user-attachments/assets/828c60d7-8fba-485e-ad1c-ef8a41a126cf" /> | <img width="2460" height="1859" alt="tc1_cc" src="https://github.com/user-attachments/assets/ebaa68cd-0c0a-41f8-9829-a41ed69fb0ca" />| <img width="2460" height="1859" alt="tc1_bcc" src="https://github.com/user-attachments/assets/aed053dc-da01-4b6d-bd15-5c9027cdf796" />|
 #### (2) BST 輸出
 <img width="412" height="337" alt="image" src="https://github.com/user-attachments/assets/3f3296c8-26d7-4bee-8d51-8a8f522cee1f" />
 
