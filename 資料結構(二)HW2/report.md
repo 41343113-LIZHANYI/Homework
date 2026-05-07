@@ -2596,7 +2596,7 @@ void DFS_List_Iterative(int start){
 ##### [結論]
    1. 時間複雜度維持 $O(n+e)$，結果相同
    2. 消除了遞迴深度的風險，在處理大型稠密圖或鏈狀圖時提升穩定性
-#### (x) ud and w — Kruskal 改用 Union-Find 路徑壓縮與 Rank 合併優化
+#### (2) ud and w — Kruskal 改用 Union-Find 路徑壓縮與 Rank 合併優化
 ```c++
 int findParent(int i,vector& parent,vector& rank){
     if(parent[i]!=i)
