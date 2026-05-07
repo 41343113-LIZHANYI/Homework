@@ -2337,6 +2337,45 @@ int main(){
 | **DFS** | `0 8 2 3 7 9 6 5 1 4` | `0 5 1 7 4 8 2 3 9 6` |
 | **AOV (拓撲排序)** | `0 8 5 2 9 1 4 3 6 7` | `0 5 8 1 4 2 9 3 6 7` |
 ### (4) d and w (有向、有權重)
+#### 測資一：標準有向無環圖測試
+| 原圖 | **BFS 廣度優先搜尋** | **DFS 深度優先搜尋** |
+| :---: | :---: | :---: |
+| <img width="3000" height="1800" alt="tc1_aoe_multiple_original" src="https://github.com/user-attachments/assets/425388e7-7a84-4f41-88c5-1e5cc689a889" />|<img width="3000" height="1800" alt="tc1_aoe_multiple_bfs" src="https://github.com/user-attachments/assets/3f95f2d7-0226-41e8-b902-477df92b1fc2" />|<img width="3000" height="1800" alt="tc1_aoe_multiple_dfs" src="https://github.com/user-attachments/assets/aab21ad1-e03e-4002-95d5-87f56295a1bb" />|
+
+|Dijkstra 最短路徑| Bellman-Ford 最短路徑 | Floyd-Warshall 全點對路徑 |
+| :---: | :---: | :---: |
+|<img width="3000" height="1800" alt="tc1_aoe_multiple_dijkstra" src="https://github.com/user-attachments/assets/9990e0f3-2e04-4e01-a6a8-1ad87105978a" />|<img width="3000" height="1800" alt="tc1_aoe_multiple_bellman" src="https://github.com/user-attachments/assets/5076b26f-9360-4d24-86f6-9e272b114161" />|<img width="3000" height="1800" alt="tc1_aoe_multiple_floyd" src="https://github.com/user-attachments/assets/ab7e7edf-2406-43ab-904a-997396ee1c63" />|
+
+|AOE 關鍵路徑|
+| :---: |
+|<img width="3000" height="1800" alt="tc1_aoe_multiple_aoe" src="https://github.com/user-attachments/assets/539eeac3-13fd-4359-8997-2e9c1e8848cd" />|
+#### 測資二：標準有向無環圖測試
+| 原圖 | **BFS 廣度優先搜尋** | **DFS 深度優先搜尋** |
+| :---: | :---: | :---: |
+| <img width="3000" height="1793" alt="tc2_aoe_contrast_original" src="https://github.com/user-attachments/assets/587b61b2-db37-4dca-9826-f86e3c6f3db3" />|<img width="3000" height="1793" alt="tc2_aoe_contrast_bfs" src="https://github.com/user-attachments/assets/d86cfd22-3c33-4330-9f9a-abdca0e9a3f3" />|<img width="3000" height="1793" alt="tc2_aoe_contrast_dfs" src="https://github.com/user-attachments/assets/c09c7e84-bfc5-44ff-8521-7fb930345d93" />|
+
+|Dijkstra 最短路徑| Bellman-Ford 最短路徑 | Floyd-Warshall 全點對路徑 |
+| :---: | :---: | :---: |
+|<img width="3000" height="1793" alt="tc2_aoe_contrast_dijkstra" src="https://github.com/user-attachments/assets/1a6eee11-1c88-4221-883c-91c7f9cda507" />|<img width="3000" height="1800" alt="tc2_aoe_contrast_bellman" src="https://github.com/user-attachments/assets/3f36225c-2a51-4a21-bfbc-8b82d53f47ec" />|<img width="3000" height="1800" alt="tc2_aoe_contrast_floyd" src="https://github.com/user-attachments/assets/d88722e1-73ec-4771-b8e8-b09ac7ea6c53" />|
+
+|AOE 關鍵路徑|
+| :---: |
+|<img width="3000" height="1793" alt="tc2_aoe_contrast_aoe" src="https://github.com/user-attachments/assets/4e085f9e-6f85-4d11-8414-cf07fb997890" />|
+#### 測資三：標準有向無環圖測試
+| 原圖 | **BFS 廣度優先搜尋** | **DFS 深度優先搜尋** |
+| :---: | :---: | :---: |
+| <img width="3000" height="1800" alt="tc3_aoe_negative_cycle_original" src="https://github.com/user-attachments/assets/55d931de-9906-4bc9-9793-e7ddde6fdd2c" />|<img width="3000" height="1800" alt="tc3_aoe_negative_cycle_bfs" src="https://github.com/user-attachments/assets/4c1b5a95-19c7-4f3b-bc03-2db095f84172" />|<img width="3000" height="1800" alt="tc3_aoe_negative_cycle_dfs" src="https://github.com/user-attachments/assets/fa9f1f5a-ddb2-4f2d-b21e-f5b9e57764d7" />|
+
+|Dijkstra 最短路徑| Bellman-Ford 最短路徑 | Floyd-Warshall 全點對路徑 |
+| :---: | :---: | :---: |
+|<img width="3000" height="1800" alt="tc3_aoe_negative_cycle_dijkstra" src="https://github.com/user-attachments/assets/5ec44448-047e-4957-bb29-5cb7dc34b463" />|<img width="3000" height="1800" alt="tc3_aoe_negative_cycle_bellman" src="https://github.com/user-attachments/assets/5db1cfd6-1e88-41a7-84db-b741470cfa73" />|<img width="3000" height="1800" alt="tc3_aoe_negative_cycle_floyd" src="https://github.com/user-attachments/assets/993d1a26-26f7-4ebb-8a32-0050e3c33019" />|
+|Dijkstra 陷入無窮迴圈|Bellman-Ford dp到最後檢測出負環|Floyd-Warshall dp到最後檢測出負環|
+
+|AOE 關鍵路徑|
+| :---: |
+|<img width="3000" height="1800" alt="tc3_aoe_negative_cycle_aoe" src="https://github.com/user-attachments/assets/bedc3374-806a-421e-acf9-b0d04ed11c70" />|
+|AOE 陷入無窮迴圈|
+
 ### 結論
 1. Heap 的效率在 $n=10^6$ 的測試下，MaxHeap與MinHeap的執行時間幾乎一致，證明演算法對稱性與複雜度完全相同，均符合 $O(\log n)$。
 
