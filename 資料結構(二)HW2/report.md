@@ -99,30 +99,74 @@
    當判斷某節點u為關節點時，將堆疊中屬於該雙連通分量的所有邊一次彈出並輸出
    
    結束後，堆疊中仍有剩餘的邊，代表屬於最後一個雙連通分量，一併輸出
-#### (2) BST
-1. BSTInsert(const pair<K, E>& e)
-   
-   利用遞迴的方式，將傳入的鍵值對與當前節點進行比較。
-   
-   若鍵值小於當前節點往左子樹尋找，大於則往右子樹尋找。
-   
-   遇到空指標時即為插入位置，動態配置新節點並回傳，若鍵值已存在則更新該節點的內容。
-   
-2. Delete(const K& k)
-   
-   實作二元搜尋樹的節點刪除，需先以遞迴找到目標鍵值的位置。
-   
-   刪除情況分三種：無子節點直接刪除、單一子節點以其子節點取代、兩個子節點則尋找右子樹的最小值（中序後繼）替換。
-   
-   替換資料後，再針對該後繼節點進行遞迴刪除，確保樹的結構維持二元搜尋樹的性質。
+#### (2) ud and w（無向、有權重）
+1. InsertEdge(int u, int v, int w)
 
-3. getHeight(TreeNode<K, E>* node)
+   先進行邊界檢查，確認頂點編號合法，並透過 ExistsEdge() 確認邊尚未存在
    
-   利用遞迴走訪計算樹的高度，若節點為空則回傳0，
+   同步更新 Adjacency List 與 Adjacency Matrix 兩種資料結構
    
-   分別取得左子樹與右子樹的高度後，取最大值加一，即為當前節點的樹高，
+   將 (v, w) 加入 adj[u]、(u, w) 加入 adj[v]，並將 matrix[u][v] 與 matrix[v][u] 設為權重 w，最後將邊數 e 加一
+
+2. DeleteVertex(int v)
+   先走訪所有與 v 相鄰的節點，從其 Adjacency List 中移除 v，並對每條被刪除的邊將 e 減一
    
-   最終將根節點算出的高度除以 $\log_2 n$ 求得比值，完成題目的驗證要求。
+   接著將 adj 陣列中 v 之後的元素逐一往前搬移覆蓋，並對所有大於 v 的頂點編號減一維持節點 ID 正確
+   
+   Adjacency Matrix 則直接刪除第 v 列與第 v 行，最後將頂點數 n 減一
+
+3. BFS_List(int start) / BFS_Matrix(int start)
+   使用 queue 實作 BFS，初始將起點標記為已拜訪並推入佇列
+   
+   List 版本每次取出佇列節點，依序走訪其 Adjacency List 中尚未拜訪的鄰居 (v, w) 並推入佇列
+   
+   Matrix 版本則逐行掃描第 u 列，找出值不為 INF 且未拜訪的節點推入佇列，直到佇列為空為止
+
+4. DFS_List(int start) / DFS_Matrix(int start)
+   使用遞迴實作 DFS，進入節點時即標記為已拜訪並輸出
+   
+   List 版本依 Adjacency List 順序遞迴走訪未拜訪的鄰居
+   
+   Matrix 版本則依序掃描矩陣該列，找到值不為 INF 且未拜訪的節點後遞迴進入，直到所有可達節點皆被拜訪
+
+5. Kruskal_List() / Kruskal_Matrix()
+   先將所有邊收集起來，List 版本從 Adjacency List 取出（確保 i < j 避免重複），Matrix 版本掃描上三角矩陣取出
+   
+   依邊的權重由小到大排序後，使用 Union-Find（並查集）的 findParent() 判斷兩端點是否在同一集合
+   
+   若不在同一集合則合併並輸出該邊，累加總權重，直到選出 n-1 條邊為止
+
+6. Prim_List(int start) / Prim_Matrix(int start)
+   使用最小優先佇列（min-heap）維護當前可擴展的最小邊，初始將起點的 key 值設為 0 並推入
+   
+   每次取出 key 值最小且尚未加入 MST 的節點 u，輸出其連接邊並將總權重累加
+   
+   List 版本更新鄰居的 key 值透過 Adjacency List；Matrix 版本則掃描第 u 列，找出更小的邊權後更新並推入佇列
+
+7. Dijkstra_List(int start) / Dijkstra_Matrix(int start)
+   使用最小優先佇列維護當前最短距離，初始將起點距離設為 0 並推入，其餘節點設為 INF
+   
+   每次取出距離最小的節點 u，若當前記錄的距離已過時則跳過（Lazy deletion）
+   
+   嘗試鬆弛 u 的所有鄰居，若找到更短路徑則更新距離並推入佇列，最後輸出各點最短距離
+
+8. BellmanFord_List(int start) / BellmanFord_Matrix(int start)
+   先將圖中所有邊收集為邊列表，初始將起點距離設為 0，其餘設為 INF
+   
+   對所有邊進行 n-1 輪鬆弛，每輪嘗試以 dist[u] + w 更新 dist[v]
+   
+   完成後再做第 n 輪檢查，若仍有邊可被鬆弛則代表圖中存在負迴圈，輸出警告並返回
+
+9. FloydWarshall_List() / FloydWarshall_Matrix()
+   建立 n×n 的距離矩陣，List 版本以 Adjacency List 初始化；Matrix 版本直接複製原矩陣
+   
+   以三層迴圈枚舉中繼點 k、起點 i、終點 j，若透過 k 的路徑更短則更新 dist[i][j]
+   
+   三層迴圈結束後檢查對角線，若任意 dist[i][i] < 0 則代表存在負迴圈，輸出警告；否則輸出完整的任兩點最短路徑矩陣
+
+#### (2) ud and w（無向、有權重）
+
+#### (2) ud and w（無向、有權重）
 
 ## 程式實作
 以下為主要程式碼：
@@ -2201,27 +2245,54 @@ int main(){
 ## 效能分析
 #### (1) ud and uw（無向、無權重）
    1. InsertEdge(int u, int v)
-      * 時間複雜度：$O(1)$（Adjacency List）/ $O(1)$（Adjacency Matrix）// 直接對陣列索引與 vector 尾端插入，為常數時間操作
-      * 空間複雜度：$O(1)$ // 僅新增固定數量的邊資料，不需額外配置大型結構
+      * 時間複雜度： $O(1)$（Adjacency List）/ $O(1)$（Adjacency Matrix）// 直接對陣列索引與 vector 尾端插入，為常數時間操作
+      * 空間複雜度： $O(1)$ // 僅新增固定數量的邊資料，不需額外配置大型結構
    2. DeleteVertex(int v)
-      * 時間複雜度：$O(n + e)$ // 需走訪所有相鄰節點刪除邊（$O(e)$），並對 adj 陣列做搬移與重新編號（$O(n)$）
-      * 空間複雜度：$O(1)$ // 原地修改，不需額外空間
+      * 時間複雜度： $O(n + e)$ // 需走訪所有相鄰節點刪除邊（$O(e)$），並對 adj 陣列做搬移與重新編號（$O(n)$）
+      * 空間複雜度： $O(1)$ // 原地修改，不需額外空間
    3. BFS_List / BFS_Matrix
-      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// List 版本僅走訪實際存在的邊；Matrix 版本需掃描整列 $n$ 個格子
-      * 空間複雜度：$O(n)$ // 需維護 visited 陣列與 queue
+      * 時間複雜度： $O(n + e)$（List）/ $O(n^2)$（Matrix）// List 版本僅走訪實際存在的邊；Matrix 版本需掃描整列 $n$ 個格子
+      * 空間複雜度： $O(n)$ // 需維護 visited 陣列與 queue
    4. DFS_List / DFS_Matrix
-      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 與 BFS 理由相同
-      * 空間複雜度：$O(n)$ // 需維護 visited 陣列與遞迴呼叫堆疊
+      * 時間複雜度： $O(n + e)$（List）/ $O(n^2)$（Matrix）// 與 BFS 理由相同
+      * 空間複雜度： $O(n)$ // 需維護 visited 陣列與遞迴呼叫堆疊
    5. ST_List / ST_Matrix（生成樹）
-      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 本質為一次完整 DFS 走訪
-      * 空間複雜度：$O(n)$ // 同 DFS
+      * 時間複雜度： $O(n + e)$（List）/ $O(n^2)$（Matrix）// 本質為一次完整 DFS 走訪
+      * 空間複雜度： $O(n)$ // 同 DFS
    6. CC_List / CC_Matrix（連通元件）
-      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 對全圖做完整 DFS，每個節點與邊各處理一次
-      * 空間複雜度：$O(n)$ // 同 DFS
+      * 時間複雜度： $O(n + e)$（List）/ $O(n^2)$（Matrix）// 對全圖做完整 DFS，每個節點與邊各處理一次
+      * 空間複雜度： $O(n)$ // 同 DFS
    7. BCC_List / BCC_Matrix（雙連通單元）
-      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// Tarjan 演算法在 DFS 框架下對每條邊處理常數次
-      * 空間複雜度：$O(n + e)$ // 維護dfn、low、parent陣列以及邊堆疊
+      * 時間複雜度： $O(n + e)$（List）/ $O(n^2)$（Matrix）// Tarjan 演算法在 DFS 框架下對每條邊處理常數次
+      * 空間複雜度： $O(n + e)$ // 維護dfn、low、parent陣列以及邊堆疊
 #### (2) ud and w (無向、有權重)
+   1. InsertEdge(int u, int v, int w)
+      * 時間複雜度： $O(1)$（Adjacency List）/ $O(1)$（Adjacency Matrix）// 直接對陣列索引與 vector 尾端插入，為常數時間操作
+      * 空間複雜度： $O(1)$ // 僅新增固定數量的邊資料，不需額外配置大型結構
+   2. DeleteVertex(int v)
+      * 時間複雜度： $O(n + e)$ // 需走訪所有相鄰節點刪除邊（$O(e)$），並對 adj 陣列做搬移與重新編號（$O(n)$）
+      * 空間複雜度： $O(1)$ // 原地修改，不需額外空間
+   3. BFS_List / BFS_Matrix
+      * 時間複雜度： $O(n + e)$（List）/ $O(n^2)$（Matrix）// List 版本僅走訪實際存在的邊；Matrix 版本需掃描整列 $n$ 個格子
+      * 空間複雜度： $O(n)$ // 需維護 visited 陣列與 queue
+   4. DFS_List / DFS_Matrix
+      * 時間複雜度： $O(n + e)$（List）/ $O(n^2)$（Matrix）// 與 BFS 理由相同
+      * 空間複雜度： $O(n)$ // 需維護 visited 陣列與遞迴呼叫堆疊
+   5. Kruskal_List / Kruskal_Matrix（最小生成樹）
+      * 時間複雜度： $O(e \log e)$ // 瓶頸為對所有邊排序；Union-Find 操作近乎 $O(1)$
+      * 空間複雜度： $O(n + e)$ // 需儲存邊列表與 Union-Find 的 parent 陣列
+   6. Prim_List / Prim_Matrix（最小生成樹）
+      * 時間複雜度： $O(e \log n)$（List）/ $O(n^2)$（Matrix）// List 版本以 min-heap 加速；Matrix 版本需逐列掃描
+      * 空間複雜度： $O(n)$ // 需維護 key、parent、inMST 陣列與優先佇列
+   7. Dijkstra_List / Dijkstra_Matrix（最短路徑）
+      * 時間複雜度： $O(e \log n)$（List）/ $O(n^2)$（Matrix）// List 版本以 min-heap 加速鬆弛；Matrix 版本逐列掃描
+      * 空間複雜度： $O(n)$ // 需維護 dist 陣列與優先佇列
+   8. BellmanFord_List / BellmanFord_Matrix（最短路徑）
+      * 時間複雜度： $O(n \cdot e)$ // 進行 n-1 輪，每輪對所有邊鬆弛一次
+      * 空間複雜度： $O(n + e)$ // 需維護 dist 陣列與邊列表
+   9. FloydWarshall_List / FloydWarshall_Matrix（全點對最短路徑）
+      * 時間複雜度： $O(n^3)$ // 三層迴圈枚舉所有 (i, k, j) 組合
+      * 空間複雜度： $O(n^2)$ // 需維護 n×n 的距離矩陣
 #### (3) d and uw (有向、無權重)
 #### (4) d and w (有向、有權重)
 
@@ -2461,12 +2532,27 @@ int main(){
 1. 每次 InsertEdge / DeleteEdge 皆同步更新 List 與 Matrix，確保兩者一致；`ExistsEdge()` 中加入驗證機制，若兩者不一致會拋出例外。
 2. DeleteVertex 需對 adj 陣列做搬移並對所有大於 v 的編號減一，需注意順序避免覆蓋錯誤。
 3. BCC 中的關節點判斷條件分兩種情況：根節點的子樹數大於 1，以及非根節點的子節點 low 值大於等於自身 dfn，需分別處理。
-#### (2) BST
+#### (2) ud and w（無向、有權重）
 ##### [使用資料結構與演算法]
-* 資料結構： 指標鏈結的二元搜尋樹
-* 演算法： 遞迴樹狀走訪
+* 資料結構：Adjacency List（`vector<pair<int,int>>[]`）與 Adjacency Matrix（`vector<vector<int>>`）雙軌並行維護，以 INF 表示不相鄰
+* 演算法：
+  1. BFS / DFS：以 queue 與遞迴實現圖走訪
+  2. Kruskal：貪婪選邊配合 Union-Find 並查集，避免形成迴圈
+  3. Prim：貪婪擴張配合 min-heap，每次選取當前最小權重的跨越邊
+  4. Dijkstra：貪婪鬆弛配合 min-heap，適用於無負權圖的單源最短路徑
+  5. Bellman-Ford：動態規劃逐輪鬆弛，可偵測負迴圈
+  6. Floyd-Warshall：動態規劃枚舉中繼點，求全點對最短路徑並偵測負迴圈
+
 ##### [須注意的事]
-1. 迴深度過大會引發堆疊溢位，這點會在優化時處理
+1. 矩陣以 INF（`1e9`）表示不相鄰，對角線初始化為 0；BFS/DFS 掃描時需同時排除 INF 與 0，避免將自環誤判為鄰居。
+2. Dijkstra 使用 Lazy deletion，取出節點時需以 `d > dist[u]` 檢查是否為過時項目並跳過，否則會重複鬆弛。
+3. 負權邊存在時 Dijkstra 無法保證正確性，負迴圈存在時甚至陷入無窮迴圈，須改用 Bellman-Ford 或 Floyd-Warshall。
+4. Floyd-Warshall 負迴圈偵測在三層迴圈全部結束後才檢查對角線 dist[i][i] < 0，不可提前中斷。
+
+#### (2) ud and w（無向、有權重）
+
+#### (2) ud and w（無向、有權重）
+
 ### 程式改進
 對目前的程式片段做優化處理
 #### (1) ud and uw — 迭代式 DFS 取代遞迴
@@ -2502,51 +2588,33 @@ void DFS_List_Iterative(int start){
 ##### [結論]
    1. 時間複雜度維持 $O(n+e)$，結果相同
    2. 消除了遞迴深度的風險，在處理大型稠密圖或鏈狀圖時提升穩定性
-#### (2) BST — 非遞迴版本的Insert和Get
-``` c++
-void InsertIterative(const pair<K,E>& e){
-    TreeNode<K, E>* newNode=new TreeNode<K,E>(e); //預建新節點
-    if(!root){
-        root=newNode; // 如果樹為空則直接當根節點
-        return;
-    }
-    TreeNode<K,E>* current=root;
-    TreeNode<K,E>* parent=NULL; // 用來記錄current的父節點
-    while(current){
-        parent=current; //先記錄父節點
-        if(e.first<current->data.first)
-            current=current->left; // 較小則往左走
-        else if(e.first > current->data.first)
-            current=current->right; // 較大則往右走
-        else{
-            current->data.second=e.second; //若key已存在則更新資料
-            delete newNode; //刪除多餘節點
-            return;
-        }
-    }
-    if(e.first<parent->data.first)
-        parent->left=newNode; //接在父節點的左邊
-    else
-        parent->right=newNode; //接在父節點的右邊
+#### (x) ud and w — Kruskal 改用 Union-Find 路徑壓縮與 Rank 合併優化
+```c++
+int findParent(int i,vector& parent,vector& rank){
+    if(parent[i]!=i)
+        parent[i]=findParent(parent[i],parent,rank); //路徑壓縮
+    return parent[i];
 }
-pair<K,E>* GetIterative(const K& k)const{
-    TreeNode<K,E>* current=root; //從root開始搜尋
-    while(current){
-        if(k<current->data.first)
-            current=current->left; // key較小往左尋找
-        else if(k>current->data.first)
-            current=current->right; //較大往右尋找
-        else
-            return &(current->data); //找到目標 回傳該節點指標
-    }
-    return NULL; //仍未找到回傳空指標
+
+void unionSets(int a,int b,vector& parent,vector& rank){
+    int rootA=findParent(a,parent,rank);
+    int rootB=findParent(b,parent,rank);
+    if (rootA==rootB)
+        return;
+    if (rank[rootA]<rank[rootB])
+        swap(rootA,rootB); // 小樹接到大樹下
+    parent[rootB] = rootA;
+    if (rank[rootA] == rank[rootB]) ++rank[rootA];
 }
 ```
 ##### [原有問題]
-   * 原本寫法高度依賴遞迴，每一次往下走訪都會在記憶體中產生一層呼叫堆疊。
-   * 當插入已排序資料導致樹極度不平衡（退化成斜曲樹）時，遞迴深度等於節點數 $n$，空間複雜度達 $O(n)$，極易引發堆疊溢位導致程式崩潰。
-##### [優化部分]
-   1. 放棄遞迴呼叫，改用while迴圈搭配暫存指標(current與parent)來進行樹狀結構的走訪與更新。
-##### [結論]
-   1. 空間複雜度完美降低為 $O(1)$。消除了堆疊溢位的風險，同時也省下了處理大量函式呼叫與返回的額外的時間成本。
+   * 原本的findParent()只做單純遞迴回溯，樹狀結構在最壞情況下深度可達 $O(n)$，每次查詢需走完整條鏈
+   * 合併時直接以rootU接到 rootV，未考慮兩棵樹的高度，可能使樹持續加深
 
+##### [優化部分]
+   1. 路徑壓縮：findParent 回傳時將沿途所有節點直接指向根節點，下次查詢直接 $O(1)$
+   2. Rank 合併：以各集合的樹高決定合併方向，矮樹接到高樹下，避免樹高增長
+
+##### [結論]
+   1. 時間複雜度從最壞 $O(n)$ 每次查詢降低為 $O(\alpha(n))$(反阿克曼)
+   2. Kruskal 整體複雜度瓶頸回歸排序的 $O(e \log e)$，Union-Find 操作不再成為負擔
