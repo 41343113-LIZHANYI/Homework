@@ -45,7 +45,7 @@
 
 來驗證兩種操作的結果相同
 
-#### ud and uw (無向、無權重)
+#### (1) ud and uw (無向、無權重)
 1. InsertEdge(int u, int v)
 
    先進行邊界檢查，確認頂點編號合法，並透過 ExistsEdge() 確認邊尚未存在
