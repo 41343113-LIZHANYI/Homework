@@ -109,6 +109,7 @@
    將 (v, w) 加入 adj[u]、(u, w) 加入 adj[v]，並將 matrix[u][v] 與 matrix[v][u] 設為權重 w，最後將邊數 e 加一
 
 2. DeleteVertex(int v)
+
    先走訪所有與 v 相鄰的節點，從其 Adjacency List 中移除 v，並對每條被刪除的邊將 e 減一
    
    接著將 adj 陣列中 v 之後的元素逐一往前搬移覆蓋，並對所有大於 v 的頂點編號減一維持節點 ID 正確
@@ -116,6 +117,7 @@
    Adjacency Matrix 則直接刪除第 v 列與第 v 行，最後將頂點數 n 減一
 
 3. BFS_List(int start) / BFS_Matrix(int start)
+
    使用 queue 實作 BFS，初始將起點標記為已拜訪並推入佇列
    
    List 版本每次取出佇列節點，依序走訪其 Adjacency List 中尚未拜訪的鄰居 (v, w) 並推入佇列
@@ -123,6 +125,7 @@
    Matrix 版本則逐行掃描第 u 列，找出值不為 INF 且未拜訪的節點推入佇列，直到佇列為空為止
 
 4. DFS_List(int start) / DFS_Matrix(int start)
+
    使用遞迴實作 DFS，進入節點時即標記為已拜訪並輸出
    
    List 版本依 Adjacency List 順序遞迴走訪未拜訪的鄰居
@@ -130,6 +133,7 @@
    Matrix 版本則依序掃描矩陣該列，找到值不為 INF 且未拜訪的節點後遞迴進入，直到所有可達節點皆被拜訪
 
 5. Kruskal_List() / Kruskal_Matrix()
+
    先將所有邊收集起來，List 版本從 Adjacency List 取出（確保 i < j 避免重複），Matrix 版本掃描上三角矩陣取出
    
    依邊的權重由小到大排序後，使用 Union-Find（並查集）的 findParent() 判斷兩端點是否在同一集合
@@ -137,6 +141,7 @@
    若不在同一集合則合併並輸出該邊，累加總權重，直到選出 n-1 條邊為止
 
 6. Prim_List(int start) / Prim_Matrix(int start)
+
    使用最小優先佇列（min-heap）維護當前可擴展的最小邊，初始將起點的 key 值設為 0 並推入
    
    每次取出 key 值最小且尚未加入 MST 的節點 u，輸出其連接邊並將總權重累加
@@ -144,6 +149,7 @@
    List 版本更新鄰居的 key 值透過 Adjacency List；Matrix 版本則掃描第 u 列，找出更小的邊權後更新並推入佇列
 
 7. Dijkstra_List(int start) / Dijkstra_Matrix(int start)
+
    使用最小優先佇列維護當前最短距離，初始將起點距離設為 0 並推入，其餘節點設為 INF
    
    每次取出距離最小的節點 u，若當前記錄的距離已過時則跳過（Lazy deletion）
@@ -151,6 +157,7 @@
    嘗試鬆弛 u 的所有鄰居，若找到更短路徑則更新距離並推入佇列，最後輸出各點最短距離
 
 8. BellmanFord_List(int start) / BellmanFord_Matrix(int start)
+
    先將圖中所有邊收集為邊列表，初始將起點距離設為 0，其餘設為 INF
    
    對所有邊進行 n-1 輪鬆弛，每輪嘗試以 dist[u] + w 更新 dist[v]
@@ -158,6 +165,7 @@
    完成後再做第 n 輪檢查，若仍有邊可被鬆弛則代表圖中存在負迴圈，輸出警告並返回
 
 9. FloydWarshall_List() / FloydWarshall_Matrix()
+
    建立 n×n 的距離矩陣，List 版本以 Adjacency List 初始化；Matrix 版本直接複製原矩陣
    
    以三層迴圈枚舉中繼點 k、起點 i、終點 j，若透過 k 的路徑更短則更新 dist[i][j]
