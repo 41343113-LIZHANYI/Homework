@@ -176,11 +176,13 @@
 
 #### (3) d and uw（有向、無權重）
 1. InsertEdge(int u, int v)
+
    先進行邊界檢查，確認頂點編號合法，並透過 ExistsEdge() 確認邊尚未存在
    
    有向圖僅需單向更新，將 v 加入 adj[u]，並將 matrix[u][v] 設為 1，最後將邊數 e 加一
 
 2. DeleteVertex(int v)
+
    先計算 adj[v] 的出邊數作為初始移除數量，再走訪所有其他節點的 Adjacency List，移除指向 v 的入邊，每移除一條將 e 減一
    
    接著將 adj 陣列中 v 之後的元素逐一往前搬移覆蓋，並對所有大於 v 的頂點編號減一維持節點 ID 正確
@@ -188,6 +190,7 @@
    Adjacency Matrix 則直接刪除第 v 列與第 v 行，最後將頂點數 n 減一
 
 3. BFS_List(int start) / BFS_Matrix(int start)
+
    使用 queue 實作 BFS，初始將起點標記為已拜訪並推入佇列
    
    List 版本每次取出佇列節點，依序走訪其 Adjacency List 中尚未拜訪的有向鄰居並推入佇列
@@ -195,6 +198,7 @@
    Matrix 版本則逐行掃描第 u 列，找出值為 1 且未拜訪的節點推入佇列，直到佇列為空為止
 
 4. DFS_List(int start) / DFS_Matrix(int start)
+
    使用遞迴實作 DFS，進入節點時即標記為已拜訪並輸出
    
    List 版本依 Adjacency List 順序遞迴走訪未拜訪的有向鄰居
@@ -202,6 +206,7 @@
    Matrix 版本則依序掃描矩陣該列，找到值為 1 且未拜訪的節點後遞迴進入，直到所有可達節點皆被拜訪
 
 5. TopologicalSort_List() / TopologicalSort_Matrix()
+
    先計算所有節點的入度，List 版本走訪每個節點的 Adjacency List 累加；Matrix 版本逐行掃描矩陣累加
    
    將所有入度為 0 的節點推入 queue，每次取出節點輸出後，將其所有有向鄰居的入度減一，若減為 0 則推入 queue
@@ -209,7 +214,69 @@
    若最終輸出的節點數不等於 n，代表圖中存在迴圈，輸出警告並返回，否則輸出完整拓撲排序結果
 
 
-#### (2) ud and w（無向、有權重）
+#### (4) d and w（有向、有權重）
+1. InsertEdge(int u, int v, int w)
+
+   先進行邊界檢查，確認頂點編號合法，並透過 ExistsEdge() 確認邊尚未存在
+   
+   有向圖僅需單向更新，將 (v, w) 加入 adj[u]，並將 matrix[u][v] 設為權重 w，最後將邊數 e 加一
+
+2. DeleteVertex(int v)
+
+   先計算 adj[v] 的出邊數作為初始移除數量，再走訪所有其他節點的 Adjacency List，移除所有指向 v 的入邊，每移除一條將計數累加
+   
+   接著將 adj 陣列中 v 之後的元素逐一往前搬移覆蓋，並對所有大於 v 的頂點編號減一維持節點 ID 正確
+   
+   Adjacency Matrix 則直接刪除第 v 列與第 v 行，最後將 e 減去移除總數並將頂點數 n 減一
+
+3. BFS_List(int start) / BFS_Matrix(int start)
+
+   使用 queue 實作 BFS，初始將起點標記為已拜訪並推入佇列
+   
+   List 版本每次取出佇列節點，依序走訪其 Adjacency List 中尚未拜訪的有向鄰居 (v, w) 並推入佇列
+   
+   Matrix 版本則逐行掃描第 u 列，找出值不為 INF 且不為 0 且未拜訪的節點推入佇列，直到佇列為空為止
+
+4. DFS_List(int start) / DFS_Matrix(int start)
+
+   使用遞迴實作 DFS，進入節點時即標記為已拜訪並輸出
+   
+   List 版本依 Adjacency List 順序遞迴走訪未拜訪的有向鄰居
+   
+   Matrix 版本則依序掃描矩陣該列，找到值不為 INF 且不為 0 且未拜訪的節點後遞迴進入，直到所有可達節點皆被拜訪
+
+5. Dijkstra_List(int start) / Dijkstra_Matrix(int start)
+
+   使用最小優先佇列維護當前最短距離，初始將起點距離設為 0 並推入，其餘節點設為 INF
+   
+   每次取出距離最小的節點 u，若當前記錄的距離已過時則跳過（Lazy deletion）
+   
+   嘗試鬆弛 u 的所有有向鄰居，若找到更短路徑則更新距離並推入佇列，最後輸出各點最短距離
+
+6. BellmanFord_List(int start) / BellmanFord_Matrix(int start)
+
+   先將圖中所有有向邊收集為邊列表，初始將起點距離設為 0，其餘設為 INF
+   
+   對所有邊進行 n-1 輪鬆弛，每輪嘗試以 dist[u] + w 更新 dist[v]
+   
+   完成後再做第 n 輪檢查，若仍有邊可被鬆弛則代表圖中存在負迴圈，輸出警告並返回
+
+7. FloydWarshall_List() / FloydWarshall_Matrix()
+
+   建立 n×n 的距離矩陣，List 版本以 Adjacency List 初始化單向邊；Matrix 版本直接複製原矩陣
+   
+   以三層迴圈枚舉中繼點 k、起點 i、終點 j，若透過 k 的有向路徑更短則更新 dist[i][j]
+   
+   三層迴圈結束後檢查對角線，若任意 dist[i][i] < 0 則代表存在負迴圈，輸出警告；否則輸出完整的任兩點最短路徑矩陣
+
+8. CriticalPath_List() / CriticalPath_Matrix()（AOE 關鍵路徑）
+
+   先以 Kahn's Algorithm 進行拓撲排序，若排序結果節點數不等於 n 則代表存在迴圈，輸出警告並返回
+   
+   順著拓撲順序計算每個節點的最早發生時間 ve，逆著拓撲順序計算每個節點的最晚發生時間 vl
+   
+   對每條有向邊 (u, v, w) 計算活動的最早開始時間 e = ve[u] 與最晚開始時間 l = vl[v] - w，若 e == l 則該活動為關鍵活動，最後輸出所有關鍵活動與最短專案完成時間
+
 
 ## 程式實作
 以下為主要程式碼：
@@ -2353,7 +2420,30 @@ int main(){
       * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 計算入度與鬆弛操作各需走訪一次全圖
       * 空間複雜度：$O(n)$ // 需維護 in_degree 陣列、queue 與 topo_order 結果陣列
 #### (4) d and w (有向、有權重)
-
+   1. InsertEdge(int u, int v, int w)
+      * 時間複雜度：$O(1)$（Adjacency List）/ $O(1)$（Adjacency Matrix）// 直接對陣列索引與 vector 尾端插入，為常數時間操作
+      * 空間複雜度：$O(1)$ // 僅新增固定數量的邊資料，不需額外配置大型結構
+   2. DeleteVertex(int v)
+      * 時間複雜度：$O(n + e)$ // 需走訪所有節點的 Adjacency List 移除入邊（$O(n + e)$），並對 adj 陣列做搬移與重新編號（$O(n)$）
+      * 空間複雜度：$O(1)$ // 原地修改，不需額外空間
+   3. BFS_List / BFS_Matrix
+      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// List 版本僅走訪實際存在的有向邊；Matrix 版本需掃描整列 $n$ 個格子
+      * 空間複雜度：$O(n)$ // 需維護 visited 陣列與 queue
+   4. DFS_List / DFS_Matrix
+      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 與 BFS 理由相同
+      * 空間複雜度：$O(n)$ // 需維護 visited 陣列與遞迴呼叫堆疊
+   5. Dijkstra_List / Dijkstra_Matrix
+      * 時間複雜度：$O(e \log n)$（List）/ $O(n^2)$（Matrix）// List 版本以 min-heap 加速鬆弛；Matrix 版本逐列掃描
+      * 空間複雜度：$O(n)$ // 需維護 dist 陣列與優先佇列
+   6. BellmanFord_List / BellmanFord_Matrix
+      * 時間複雜度：$O(n \cdot e)$ // 進行 n-1 輪，每輪對所有有向邊鬆弛一次
+      * 空間複雜度：$O(n + e)$ // 需維護 dist 陣列與邊列表
+   7. FloydWarshall_List / FloydWarshall_Matrix
+      * 時間複雜度：$O(n^3)$ // 三層迴圈枚舉所有 (i, k, j) 組合
+      * 空間複雜度：$O(n^2)$ // 需維護 n×n 的距離矩陣
+   8. CriticalPath_List / CriticalPath_Matrix（AOE 關鍵路徑）
+      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 拓撲排序、ve / vl 推導、關鍵活動掃描各需走訪一次全圖
+      * 空間複雜度：$O(n + e)$ // 需維護 in_degree、ve、vl、topo_order 陣列與邊列表
 ## 測試案例
 ### (1) ud and uw (無向、無權重)
 ####  測資一：綜合連通圖 
@@ -2621,8 +2711,21 @@ int main(){
 3. 拓撲排序結束後必須以 count != n 檢查是否有迴圈，若存在迴圈則部分節點的入度永遠不會降為 0 而無法進入 queue。
 
 
-#### (2) ud and w（無向、有權重）
+#### (4) d and w（有向、有權重）
+##### [使用資料結構與演算法]
+* 資料結構：Adjacency List（`vector<pair<int,int>>[]`）與 Adjacency Matrix（`vector<vector<int>>`）雙軌並行維護，有向圖僅記錄單向關係，以 INF 表示不相鄰
+* 演算法：
+  1. BFS / DFS：以 queue 與遞迴實現有向圖走訪
+  2. Dijkstra：貪婪鬆弛配合 min-heap，適用於無負權有向圖的單源最短路徑
+  3. Bellman-Ford：動態規劃逐輪鬆弛，可處理負權邊並偵測負迴圈
+  4. Floyd-Warshall：動態規劃枚舉中繼點，求全點對最短路徑並偵測負迴圈
+  5. AOE 關鍵路徑：以 Kahn's Algorithm 拓撲排序為基礎，順向推導 ve、逆向推導 vl，識別零浮時的關鍵活動
 
+##### [須注意的事]
+1. 有向圖的 InsertEdge / DeleteEdge 僅更新單向，matrix[u][v] 與 matrix[v][u] 為獨立值，不可誤設反向邊。
+2. Dijkstra 存在負權邊時會產生錯誤結果，負迴圈時甚至陷入無窮迴圈，此情況須停用 Dijkstra 改用 Bellman-Ford。
+3. Floyd-Warshall 與 AOE 的負迴圈／迴圈偵測須在全部 DP 結束後才進行，不可提前中斷三層迴圈或拓撲排序。
+4. AOE 中 vl 的初始值須設為 max_ve（專案最晚完成時間），逆拓撲推導時才能正確取最小值收斂。
 ### 程式改進
 對目前的程式片段做優化處理
 #### (1) ud and uw — 迭代式 DFS 取代遞迴
@@ -2725,3 +2828,53 @@ void TopologicalSort_DFS(){
 ##### [結論]
    1. 時間複雜度維持 $O(n + e)$，空間複雜度維持 $O(n)$，功能與 Kahn's Algorithm 完全等價
    2. 實作更直觀地融合於既有的 DFS 框架中，不需額外維護入度陣列，程式碼更為簡潔
+
+#### (4) d and w — Bellman-Ford 改用佇列優化(SPFA)
+```c++
+void SPFA(int start){
+    cout << "[Adj List] SPFA :\n";
+    vector dist(n,INF);
+    vector inQueue(n,0);
+    vector relaxCount(n,0);
+    dist[start]=0;
+    queue q;
+    q.push(start);
+    inQueue[start]=1;
+    while (!q.empty()){
+        int u = q.front();
+        q.pop();
+        inQueue[u]=0;
+        for(auto& nei:adj[u]){
+            int v=nei.first, w=nei.second;
+            if(dist[u]+w<dist[v]){
+                dist[v]=dist[u]+w;
+                if(!inQueue[v]){
+                    q.push(v);
+                    inQueue[v]=1;
+                    if(++relaxCount[v]>=n){
+                        cout<<"圖中存在負迴圈\n";
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    for(int i=0;i<n;++i){
+        if(dist[i]==INF)
+            cout<<"到 "<<i<<": INF\n";
+        else
+            cout<<"到 "<<i<<": "<<dist[i]<<'\n';
+    }
+}
+```
+##### [原有問題]
+   * 原本的 Bellman-Ford 每輪固定對所有邊做鬆弛，即使大多數節點的距離在本輪並未更新，仍需完整掃描所有 $e$ 條邊
+   * n-1 輪的固定迭代在稀疏圖或實際收斂輪數遠小於 n-1 的情況下，造成大量無效運算
+
+##### [優化部分]
+   1. 以 queue 取代固定輪數，只有距離被成功更新的節點才會重新推入佇列，避免對未更新節點的鄰居做無效鬆弛
+   2. 以 relaxCount 計算每個節點被鬆弛的次數，若某節點被鬆弛達 n 次則確認存在負迴圈並提前返回
+
+##### [結論]
+   1. 平均時間複雜度降低為 $O(k \cdot e)$，其中 $k$ 為實際需要的鬆弛輪數，通常遠小於 $n-1$
+   2. 最壞情況（含負迴圈或稠密圖）時間複雜度仍為 $O(n \cdot e)$，但實務上在稀疏圖與正權圖中效能顯著優於標準 Bellman-Ford
