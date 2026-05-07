@@ -99,7 +99,9 @@
    當判斷某節點u為關節點時，將堆疊中屬於該雙連通分量的所有邊一次彈出並輸出
    
    結束後，堆疊中仍有剩餘的邊，代表屬於最後一個雙連通分量，一併輸出
-#### (2) ud and w（無向、有權重）
+   
+#### (3) ud and w（無向、有權重）
+
 1. InsertEdge(int u, int v, int w)
 
    先進行邊界檢查，確認頂點編號合法，並透過 ExistsEdge() 確認邊尚未存在
@@ -172,7 +174,40 @@
    
    三層迴圈結束後檢查對角線，若任意 dist[i][i] < 0 則代表存在負迴圈，輸出警告；否則輸出完整的任兩點最短路徑矩陣
 
-#### (2) ud and w（無向、有權重）
+#### (3) d and uw（有向、無權重）
+1. InsertEdge(int u, int v)
+   先進行邊界檢查，確認頂點編號合法，並透過 ExistsEdge() 確認邊尚未存在
+   
+   有向圖僅需單向更新，將 v 加入 adj[u]，並將 matrix[u][v] 設為 1，最後將邊數 e 加一
+
+2. DeleteVertex(int v)
+   先計算 adj[v] 的出邊數作為初始移除數量，再走訪所有其他節點的 Adjacency List，移除指向 v 的入邊，每移除一條將 e 減一
+   
+   接著將 adj 陣列中 v 之後的元素逐一往前搬移覆蓋，並對所有大於 v 的頂點編號減一維持節點 ID 正確
+   
+   Adjacency Matrix 則直接刪除第 v 列與第 v 行，最後將頂點數 n 減一
+
+3. BFS_List(int start) / BFS_Matrix(int start)
+   使用 queue 實作 BFS，初始將起點標記為已拜訪並推入佇列
+   
+   List 版本每次取出佇列節點，依序走訪其 Adjacency List 中尚未拜訪的有向鄰居並推入佇列
+   
+   Matrix 版本則逐行掃描第 u 列，找出值為 1 且未拜訪的節點推入佇列，直到佇列為空為止
+
+4. DFS_List(int start) / DFS_Matrix(int start)
+   使用遞迴實作 DFS，進入節點時即標記為已拜訪並輸出
+   
+   List 版本依 Adjacency List 順序遞迴走訪未拜訪的有向鄰居
+   
+   Matrix 版本則依序掃描矩陣該列，找到值為 1 且未拜訪的節點後遞迴進入，直到所有可達節點皆被拜訪
+
+5. TopologicalSort_List() / TopologicalSort_Matrix()
+   先計算所有節點的入度，List 版本走訪每個節點的 Adjacency List 累加；Matrix 版本逐行掃描矩陣累加
+   
+   將所有入度為 0 的節點推入 queue，每次取出節點輸出後，將其所有有向鄰居的入度減一，若減為 0 則推入 queue
+   
+   若最終輸出的節點數不等於 n，代表圖中存在迴圈，輸出警告並返回，否則輸出完整拓撲排序結果
+
 
 #### (2) ud and w（無向、有權重）
 
@@ -2302,6 +2337,21 @@ int main(){
       * 時間複雜度： $O(n^3)$ // 三層迴圈枚舉所有 (i, k, j) 組合
       * 空間複雜度： $O(n^2)$ // 需維護 n×n 的距離矩陣
 #### (3) d and uw (有向、無權重)
+   1. InsertEdge(int u, int v)
+      * 時間複雜度：$O(1)$（Adjacency List）/ $O(1)$（Adjacency Matrix）// 直接對陣列索引與 vector 尾端插入，為常數時間操作
+      * 空間複雜度：$O(1)$ // 僅新增固定數量的邊資料，不需額外配置大型結構
+   2. DeleteVertex(int v)
+      * 時間複雜度：$O(n + e)$ // 需走訪所有節點的 Adjacency List 移除入邊（$O(n + e)$），並對 adj 陣列做搬移與重新編號（$O(n)$）
+      * 空間複雜度：$O(1)$ // 原地修改，不需額外空間
+   3. BFS_List / BFS_Matrix
+      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// List 版本僅走訪實際存在的有向邊；Matrix 版本需掃描整列 $n$ 個格子
+      * 空間複雜度：$O(n)$ // 需維護 visited 陣列與 queue
+   4. DFS_List / DFS_Matrix
+      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 與 BFS 理由相同
+      * 空間複雜度：$O(n)$ // 需維護 visited 陣列與遞迴呼叫堆疊
+   5. TopologicalSort_List / TopologicalSort_Matrix（AOV 拓撲排序）
+      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 計算入度與鬆弛操作各需走訪一次全圖
+      * 空間複雜度：$O(n)$ // 需維護 in_degree 陣列、queue 與 topo_order 結果陣列
 #### (4) d and w (有向、有權重)
 
 ## 測試案例
@@ -2557,7 +2607,19 @@ int main(){
 3. 負權邊存在時 Dijkstra 無法保證正確性，負迴圈存在時甚至陷入無窮迴圈，須改用 Bellman-Ford 或 Floyd-Warshall。
 4. Floyd-Warshall 負迴圈偵測在三層迴圈全部結束後才檢查對角線 dist[i][i] < 0，不可提前中斷。
 
-#### (2) ud and w（無向、有權重）
+#### (3) d and uw（有向、無權重）
+##### [使用資料結構與演算法]
+* 資料結構：Adjacency List（`vector<int>[]`）與 Adjacency Matrix（`vector<vector<bool>>`）雙軌並行維護，有向圖僅記錄單向關係
+* 演算法：
+  1. BFS：利用 queue 實現逐層走訪，沿有向邊方向擴展
+  2. DFS：利用遞迴實現深度優先走訪，沿有向邊方向遞迴
+  3. Kahn's Algorithm（BFS 拓撲排序）：利用入度陣列配合 queue，每次取出入度為 0 的節點，並更新其後繼節點的入度，完成 AOV 拓撲排序並偵測迴圈
+
+##### [須注意的事]
+1. 有向圖的 InsertEdge / DeleteEdge 僅更新單向，矩陣為非對稱矩陣，與無向版本不同，需注意不可誤加反向邊。
+2. DeleteVertex 需分別處理出邊（adj[v] 的長度）與入邊（走訪所有其他節點），兩者合計才是正確的移除邊數。
+3. 拓撲排序結束後必須以 count != n 檢查是否有迴圈，若存在迴圈則部分節點的入度永遠不會降為 0 而無法進入 queue。
+
 
 #### (2) ud and w（無向、有權重）
 
@@ -2626,3 +2688,40 @@ void unionSets(int a,int b,vector& parent,vector& rank){
 ##### [結論]
    1. 時間複雜度從最壞 $O(n)$ 每次查詢降低為 $O(\alpha(n))$(反阿克曼)
    2. Kruskal 整體複雜度瓶頸回歸排序的 $O(e \log e)$，Union-Find 操作不再成為負擔
+
+#### (3) d and uw — DFS 後序遍歷實作拓撲排序
+```c++
+void DFSTopoUtil(int u,vector& visited,stack& st){
+    visited[u]=1;
+    for(int v:adj[u]){
+        if(!visited[v])
+            DFSTopoUtil(v,visited,st);
+    }
+    st.push(u); 
+}
+void TopologicalSort_DFS(){
+    cout<<"[List] AOV : ";
+    vector visited(n,0);
+    stack st;
+    for(int i=0;i<n;++i){
+        if(!visited[i])
+            DFSTopoUtil(i,visited,st);
+    }
+    while(!st.empty()){
+        cout<<st.top()<<" ";
+        st.pop();
+    }
+    cout<<'\n';
+}
+```
+##### [原有問題]
+   * 原本的 Kahn's Algorithm 使用 BFS 搭配入度陣列，需額外預處理所有節點的入度，才能找到初始入度為 0 的起點
+   * 對於多源圖（多個入度為 0 的節點），輸出順序受 queue 中節點加入先後影響，較難直覺控制走訪順序
+
+##### [優化部分]
+   1. 改以 DFS 後序遍歷實作，節點在其所有後繼節點皆處理完畢後才推入 stack
+   2. 不需預先計算入度，直接從任意未拜訪節點出發遞迴，最終由 stack 反序輸出即為拓撲順序
+
+##### [結論]
+   1. 時間複雜度維持 $O(n + e)$，空間複雜度維持 $O(n)$，功能與 Kahn's Algorithm 完全等價
+   2. 實作更直觀地融合於既有的 DFS 框架中，不需額外維護入度陣列，程式碼更為簡潔
