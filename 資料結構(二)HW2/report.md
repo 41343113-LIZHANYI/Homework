@@ -2198,23 +2198,28 @@ int main(){
     return 0;
 }
 ```
-## 效能分析
-#### (1) ud and uw (無向、無權重)
-   1. ChangeSize1D(T*& a, const int oldSize, const int newSize)
-      * 時間複雜度： $O(n)$ // 必須將原陣列的$n$個元素複製到新陣列中
-      * 空間複雜度： $O(n)$ // 需額外配置大小為新容量的動態陣列
-   2. Push(const T& e)
-      * 時間複雜度：最壞情況 $O(\log n)$ // 需從樹葉向上遍歷至樹根；平攤複雜度約為 $O(1)$
-      * 空間複雜度： $O(1)$ // 除了可能觸發陣列擴充外，僅需固定數量的指標與變數
-   3. Pop()
-      * 時間複雜度：最壞情況 $O(\log n)$ // 需從樹根向下遍歷至樹葉
-      * 空間複雜度： $O(1)$ // 僅進行常數變數操作
-   4. Top()/IsEmpty()
-      * 時間複雜度： $O(1)$ // 陣列取值與簡單條件判斷
-      * 空間複雜度： $O(1)$
-   5. MaxHeap()/MinHeap() 建構與解構
-      * 時間複雜度： $O(1)$ // 初始化與釋放記憶體
-      * 空間複雜度： $O(1)$
+#### (1) ud and uw（無向、無權重）
+   1. InsertEdge(int u, int v)
+      * 時間複雜度：$O(1)$（Adjacency List）/ $O(1)$（Adjacency Matrix）// 直接對陣列索引與 vector 尾端插入，為常數時間操作
+      * 空間複雜度：$O(1)$ // 僅新增固定數量的邊資料，不需額外配置大型結構
+   2. DeleteVertex(int v)
+      * 時間複雜度：$O(n + e)$ // 需走訪所有相鄰節點刪除邊（$O(e)$），並對 adj 陣列做搬移與重新編號（$O(n)$）
+      * 空間複雜度：$O(1)$ // 原地修改，不需額外空間
+   3. BFS_List / BFS_Matrix
+      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// List 版本僅走訪實際存在的邊；Matrix 版本需掃描整列 $n$ 個格子
+      * 空間複雜度：$O(n)$ // 需維護 visited 陣列與 queue
+   4. DFS_List / DFS_Matrix
+      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 與 BFS 理由相同
+      * 空間複雜度：$O(n)$ // 需維護 visited 陣列與遞迴呼叫堆疊
+   5. ST_List / ST_Matrix（生成樹）
+      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 本質為一次完整 DFS 走訪
+      * 空間複雜度：$O(n)$ // 同 DFS
+   6. CC_List / CC_Matrix（連通元件）
+      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 對全圖做完整 DFS，每個節點與邊各處理一次
+      * 空間複雜度：$O(n)$ // 同 DFS
+   7. BCC_List / BCC_Matrix（雙連通單元）
+      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// Tarjan 演算法在 DFS 框架下對每條邊處理常數次
+      * 空間複雜度：$O(n + e)$ // 維護dfn、low、parent陣列以及邊堆疊
 #### (2) ud and w (無向、有權重)
 #### (3) d and uw (有向、無權重)
 #### (4) d and w (有向、有權重)
@@ -2444,15 +2449,17 @@ int main(){
 ## 申論及開發報告
 ### 程式分析
 對當前寫的程式做優點以及資料結構&演算法分析，還有程式需注意的要點
-#### (1) Max/Min Heap
-
+#### (1) ud and uw（無向、無權重）
 ##### [使用資料結構與演算法]
-* 資料結構： 一維陣列模擬的完全二元樹
+* 資料結構：Adjacency List（`vector<int>[]`）與 Adjacency Matrix（`vector<vector<bool>>`）雙軌並行維護
 * 演算法：
-  1. 利用向上浮動與向下沉降進行節點比較與位置交換
-  2. 並在容量不足時動態配置兩倍加一的新陣列
+  1. BFS：利用 queue 實現逐層走訪
+  2. DFS：利用遞迴實現深度優先走訪，並作為生成樹、連通元件的基礎
+  3. Tarjan 演算法：利用 dfn 與 low 值配合邊堆疊，識別雙連通單元
 ##### [須注意的事]
-1. 程式跳過heap[0]使用1 based，使父節點$i$的子節點直接為 $2i$ 和 $2i+1$
+1. 每次 InsertEdge / DeleteEdge 皆同步更新 List 與 Matrix，確保兩者一致；`ExistsEdge()` 中加入驗證機制，若兩者不一致會拋出例外。
+2. DeleteVertex 需對 adj 陣列做搬移並對所有大於 v 的編號減一，需注意順序避免覆蓋錯誤。
+3. BCC 中的關節點判斷條件分兩種情況：根節點的子樹數大於 1，以及非根節點的子節點 low 值大於等於自身 dfn，需分別處理。
 #### (2) BST
 ##### [使用資料結構與演算法]
 * 資料結構： 指標鏈結的二元搜尋樹
@@ -2461,40 +2468,39 @@ int main(){
 1. 迴深度過大會引發堆疊溢位，這點會在優化時處理
 ### 程式改進
 對目前的程式片段做優化處理
-#### (1) Max/Min Heap — 由下而上建樹 
+#### (x) ud and uw — 迭代式 DFS 取代遞迴
 ```c++
-MaxHeap(T* initArray,int n){
-    heapSize=n; //設定初始大小
-    capacity=n+10; //預留空間
-    heap=new T[capacity+1]; //配置1based動態陣列
-    for(int i=1;i<=n;++i)
-        heap[i]=initArray[i-1]; //將外部陣列資料複製進heap
-    for (int i=heapSize/2;i>=1;--i){ //從最後一個非葉節點向前遍歷
-        int currentNode=i;
-        int child=2*i;
-        T temp=heap[currentNode]; //暫存當前準備向下的節點值
-        while(child<=heapSize){
-            if(child< heapSize&&heap[child]<heap[child+1])
-                child++; //挑選子節點中較大者
-            if(temp>=heap[child])
-                break;
-            heap[currentNode]=heap[child]; //子節點上移
-            currentNode=child; //更新位置
-            child*=2; //檢查下一層左子節點
+void DFS_List_Iterative(int start){
+    cout <<"[List] DFS : ";
+    vector visited(n,0);
+    stack st;
+    st.push(start);
+    while(!st.empty()){
+        int u=st.top();
+        st.pop();
+        if(visited[u])
+            continue;
+        visited[u]=1;
+        cout<<u<<" ";
+        for(int i=adj[u].size()-1;i>=0;--i) {
+            if(!visited[adj[u][i]])
+                st.push(adj[u][i]);
         }
-        heap[currentNode]=temp; //將值放入正確位置
     }
+    cout << '\n';
 }
 ```
 ##### [原有問題]
-   * 原本需要一個個呼叫Push()插入資料，每次插入最壞情況需$O(\log n)$。
-   * 若要建立包含$n$個元素的堆積，總時間複雜度會高達 $O(n \log n)$，對於已知全部測資的初始建樹過程非常缺乏效率。
+   * 原本的遞迴DFS在圖的規模極大或深度極深時，可能因系統呼叫堆疊空間有限而導致堆疊溢出
+   * 每層遞迴皆需保存函式的活動紀錄:return address、區域變數等，對記憶體造成較大壓力
+
 ##### [優化部分]
-   1. 不逐一觸發向上浮動，而是先將 $n$ 筆資料直接填入陣列。
-   2. 從最後一個非葉節點往前遍歷至根節點，逐一執行向下沉降。
+   1. 取代遞迴堆疊，手動控制走訪狀態
+   2. 反向推入鄰居節點，確保彈出順序與遞迴版本順序一致
+
 ##### [結論]
-   1. 時間複雜度降低為線性時間 $O(n)$。
-   2. 因為底層節點多但沉降距離短，上層節點少沉降距離長，整體大幅減少了節點比較的總次數，顯著提升初始建樹效能。
+   1. 時間複雜度維持 $O(n+e)$，結果相同
+   2. 消除了遞迴深度的風險，在處理大型稠密圖或鏈狀圖時提升穩定性
 #### (2) BST — 非遞迴版本的Insert和Get
 ``` c++
 void InsertIterative(const pair<K,E>& e){
