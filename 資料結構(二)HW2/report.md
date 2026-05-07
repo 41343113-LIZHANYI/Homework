@@ -2198,6 +2198,7 @@ int main(){
     return 0;
 }
 ```
+## 效能分析
 #### (1) ud and uw（無向、無權重）
    1. InsertEdge(int u, int v)
       * 時間複雜度：$O(1)$（Adjacency List）/ $O(1)$（Adjacency Matrix）// 直接對陣列索引與 vector 尾端插入，為常數時間操作
@@ -2468,7 +2469,7 @@ int main(){
 1. 迴深度過大會引發堆疊溢位，這點會在優化時處理
 ### 程式改進
 對目前的程式片段做優化處理
-#### (x) ud and uw — 迭代式 DFS 取代遞迴
+#### (1) ud and uw — 迭代式 DFS 取代遞迴
 ```c++
 void DFS_List_Iterative(int start){
     cout <<"[List] DFS : ";
