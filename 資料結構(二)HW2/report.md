@@ -2405,45 +2405,45 @@ int main(){
       * 空間複雜度： $O(n^2)$ // 需維護 n×n 的距離矩陣
 #### (3) d and uw (有向、無權重)
    1. InsertEdge(int u, int v)
-      * 時間複雜度：$O(1)$（Adjacency List）/ $O(1)$（Adjacency Matrix）// 直接對陣列索引與 vector 尾端插入，為常數時間操作
-      * 空間複雜度：$O(1)$ // 僅新增固定數量的邊資料，不需額外配置大型結構
+      * 時間複雜度： $O(1)$（Adjacency List）/ $O(1)$（Adjacency Matrix）// 直接對陣列索引與 vector 尾端插入，為常數時間操作
+      * 空間複雜度： $O(1)$ // 僅新增固定數量的邊資料，不需額外配置大型結構
    2. DeleteVertex(int v)
-      * 時間複雜度：$O(n + e)$ // 需走訪所有節點的 Adjacency List 移除入邊（$O(n + e)$），並對 adj 陣列做搬移與重新編號（$O(n)$）
-      * 空間複雜度：$O(1)$ // 原地修改，不需額外空間
+      * 時間複雜度： $O(n + e)$ // 需走訪所有節點的 Adjacency List 移除入邊（$O(n + e)$），並對 adj 陣列做搬移與重新編號（$O(n)$）
+      * 空間複雜度： $O(1)$ // 原地修改，不需額外空間
    3. BFS_List / BFS_Matrix
-      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// List 版本僅走訪實際存在的有向邊；Matrix 版本需掃描整列 $n$ 個格子
-      * 空間複雜度：$O(n)$ // 需維護 visited 陣列與 queue
+      * 時間複雜度： $O(n + e)$（List）/ $O(n^2)$（Matrix）// List 版本僅走訪實際存在的有向邊；Matrix 版本需掃描整列 $n$ 個格子
+      * 空間複雜度： $O(n)$ // 需維護 visited 陣列與 queue
    4. DFS_List / DFS_Matrix
-      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 與 BFS 理由相同
-      * 空間複雜度：$O(n)$ // 需維護 visited 陣列與遞迴呼叫堆疊
+      * 時間複雜度： $O(n + e)$（List）/ $O(n^2)$（Matrix）// 與 BFS 理由相同
+      * 空間複雜度： $O(n)$ // 需維護 visited 陣列與遞迴呼叫堆疊
    5. TopologicalSort_List / TopologicalSort_Matrix（AOV 拓撲排序）
-      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 計算入度與鬆弛操作各需走訪一次全圖
-      * 空間複雜度：$O(n)$ // 需維護 in_degree 陣列、queue 與 topo_order 結果陣列
+      * 時間複雜度： $O(n + e)$（List）/ $O(n^2)$（Matrix）// 計算入度與鬆弛操作各需走訪一次全圖
+      * 空間複雜度： $O(n)$ // 需維護 in_degree 陣列、queue 與 topo_order 結果陣列
 #### (4) d and w (有向、有權重)
    1. InsertEdge(int u, int v, int w)
-      * 時間複雜度：$O(1)$（Adjacency List）/ $O(1)$（Adjacency Matrix）// 直接對陣列索引與 vector 尾端插入，為常數時間操作
-      * 空間複雜度：$O(1)$ // 僅新增固定數量的邊資料，不需額外配置大型結構
+      * 時間複雜度： $O(1)$（Adjacency List）/ $O(1)$（Adjacency Matrix）// 直接對陣列索引與 vector 尾端插入，為常數時間操作
+      * 空間複雜度： $O(1)$ // 僅新增固定數量的邊資料，不需額外配置大型結構
    2. DeleteVertex(int v)
-      * 時間複雜度：$O(n + e)$ // 需走訪所有節點的 Adjacency List 移除入邊（$O(n + e)$），並對 adj 陣列做搬移與重新編號（$O(n)$）
-      * 空間複雜度：$O(1)$ // 原地修改，不需額外空間
+      * 時間複雜度： $O(n + e)$ // 需走訪所有節點的 Adjacency List 移除入邊（$O(n + e)$），並對 adj 陣列做搬移與重新編號（$O(n)$）
+      * 空間複雜度： $O(1)$ // 原地修改，不需額外空間
    3. BFS_List / BFS_Matrix
-      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// List 版本僅走訪實際存在的有向邊；Matrix 版本需掃描整列 $n$ 個格子
-      * 空間複雜度：$O(n)$ // 需維護 visited 陣列與 queue
+      * 時間複雜度： $O(n + e)$（List）/ $O(n^2)$（Matrix）// List 版本僅走訪實際存在的有向邊；Matrix 版本需掃描整列 $n$ 個格子
+      * 空間複雜度： $O(n)$ // 需維護 visited 陣列與 queue
    4. DFS_List / DFS_Matrix
-      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 與 BFS 理由相同
-      * 空間複雜度：$O(n)$ // 需維護 visited 陣列與遞迴呼叫堆疊
+      * 時間複雜度： $O(n + e)$（List）/ $O(n^2)$（Matrix）// 與 BFS 理由相同
+      * 空間複雜度： $O(n)$ // 需維護 visited 陣列與遞迴呼叫堆疊
    5. Dijkstra_List / Dijkstra_Matrix
-      * 時間複雜度：$O(e \log n)$（List）/ $O(n^2)$（Matrix）// List 版本以 min-heap 加速鬆弛；Matrix 版本逐列掃描
-      * 空間複雜度：$O(n)$ // 需維護 dist 陣列與優先佇列
+      * 時間複雜度： $O(e \log n)$（List）/ $O(n^2)$（Matrix）// List 版本以 min-heap 加速鬆弛；Matrix 版本逐列掃描
+      * 空間複雜度： $O(n)$ // 需維護 dist 陣列與優先佇列
    6. BellmanFord_List / BellmanFord_Matrix
-      * 時間複雜度：$O(n \cdot e)$ // 進行 n-1 輪，每輪對所有有向邊鬆弛一次
-      * 空間複雜度：$O(n + e)$ // 需維護 dist 陣列與邊列表
+      * 時間複雜度： $O(n \cdot e)$ // 進行 n-1 輪，每輪對所有有向邊鬆弛一次
+      * 空間複雜度： $O(n + e)$ // 需維護 dist 陣列與邊列表
    7. FloydWarshall_List / FloydWarshall_Matrix
-      * 時間複雜度：$O(n^3)$ // 三層迴圈枚舉所有 (i, k, j) 組合
-      * 空間複雜度：$O(n^2)$ // 需維護 n×n 的距離矩陣
+      * 時間複雜度： $O(n^3)$ // 三層迴圈枚舉所有 (i, k, j) 組合
+      * 空間複雜度： $O(n^2)$ // 需維護 n×n 的距離矩陣
    8. CriticalPath_List / CriticalPath_Matrix（AOE 關鍵路徑）
-      * 時間複雜度：$O(n + e)$（List）/ $O(n^2)$（Matrix）// 拓撲排序、ve / vl 推導、關鍵活動掃描各需走訪一次全圖
-      * 空間複雜度：$O(n + e)$ // 需維護 in_degree、ve、vl、topo_order 陣列與邊列表
+      * 時間複雜度： $O(n + e)$（List）/ $O(n^2)$（Matrix）// 拓撲排序、ve / vl 推導、關鍵活動掃描各需走訪一次全圖
+      * 空間複雜度： $O(n + e)$ // 需維護 in_degree、ve、vl、topo_order 陣列與邊列表
 ## 測試案例
 ### (1) ud and uw (無向、無權重)
 ####  測資一：綜合連通圖 
