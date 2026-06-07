@@ -20,7 +20,7 @@
       3. All-Pairs Shortest Paths (多對多)
    4. Activity Networks (活動網絡)
       1. Activity on Vertex (AOV) Networks (頂點活動網路)
-      2. Activity on Edge (AOV) Networks (邊活動網路)
+      2. Activity on Edge (AOE) Networks (邊活動網路)
 
 ### 解題策略
 各算法有限制圖的類別與情況
