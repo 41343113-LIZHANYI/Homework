@@ -1,6 +1,23 @@
 # 41343113 李展毅 41343144 廖峻德 (第六組 Sorting Project)
 ## 解題說明
 ### 問題描述
+* 討論以下問題的 worst-case 與 average-case
+* 實作排序 n 個數字的函式，包含以下：
+  1. Insertion Sort
+  2. Quick Sort (using median-of-three method to choose pivot)
+  3. Merge Sort (using iterative method)
+  4. Heap Sort
+  5. Composite Sort
+* n=500, 1000, 2000, 3000, 4000, 5000 時，計算每個排序函式的執行時間和記憶體，並繪製圖表
+* 分析每個排序法的時間複雜度，並與測試結果進行比對，確認結果是否正確
+* 找出在各個 n 時，哪個排序法最快 (以表格等形式呈現)，並寫一個結合多種排序
+法的函式 (Composite Sort)，可以對應不同輸入資料，在最短的時間內完成排序
+* 計時方式探討說明，包含精度等。(若使用內建函式庫的方式，可以附上簡單程式
+碼說明)
+* 說明 Heap Sort 的測試資料產生細節，如你使用「隨機產生」(題目要求) 幾次
+* 說明 Merge Sort 的測試資料產生細節，包含你如何建立等
+* 報告須附上所有使用的程式碼，可以拆成多個部分說明
+
 ### 解題策略
 #### (1) 
 #### (2) 
