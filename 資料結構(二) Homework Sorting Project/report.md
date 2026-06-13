@@ -57,7 +57,7 @@ int med3(int* a,int l,int r){
     return a[r-1];
 }
 
-// Quick Sort 遞迴主體
+//Quick Sort遞迴主體
 void qSortRec(int* a,int l,int r){
     if(l+10<=r){
         int p=med3(a,l,r);
@@ -83,7 +83,7 @@ void quickSort(int* a,int n){
     qSortRec(a,0,n-1);
 }
 
-// 合併兩個已排序的子陣列
+//合併兩個已排序的子陣列
 void merge(int* a,int* tmp,int l,int r,int rend){
     int lend=r-1;
     int p=l;
@@ -102,7 +102,7 @@ void merge(int* a,int* tmp,int l,int r,int rend){
         a[rend]=tmp[rend];
 }
 
-// 迭代版 Merge Sort
+// 迭代 Merge Sort
 void mergeSort(int* a,int n){
     int* tmp=new int[n];
     for(int w=1;w<n;w*=2)
@@ -138,7 +138,7 @@ void heapSort(int* a,int n){
     }
 }
 
-// 真・複合排序 (底層塊狀 Insertion 搭配上層 Merge)
+// 複合排序 (底層Insertion搭配上層Merge)
 void compSort(int* a,int n){
     int b=20;
     for(int i=0;i<n;i+=b)
