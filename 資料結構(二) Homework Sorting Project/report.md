@@ -279,8 +279,8 @@ int main(){
 
 #### 圖表輸出
 
-[放入 sorting_performance_v2.png]
-
+[<img width="1751" height="831" alt="image" src="https://github.com/user-attachments/assets/eaba2fb6-d5ae-433d-b1c5-d600fac821ab" />]
+[<img width="1745" height="830" alt="image" src="https://github.com/user-attachments/assets/08dcd625-f3a2-44df-8cea-ea80eda13c54" />]
 #### 實際輸出 (執行時間表 ms)
 
 **Worst-case (ms)**
