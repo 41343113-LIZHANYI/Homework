@@ -261,19 +261,19 @@ int main(){
 #### 理論時間與空間複雜度
 1. **Insertion Sort:**
    * 時間複雜度：最壞與平均皆為 $O(n^2)$。
-   * 空間複雜度：$O(1)$ (In-place)。
+   * 空間複雜度： $O(1)$ (In-place)。
 2. **Quick Sort (Median-of-three):**
    * 時間複雜度：平均 $O(n \log n)$，最壞情況理論上為 $O(n^2)$，但在三數取中法保護下極難退化。
-   * 空間複雜度：$O(\log n)$ (遞迴堆疊)。
+   * 空間複雜度： $O(\log n)$ (遞迴堆疊)。
 3. **Merge Sort (Iterative):**
    * 時間複雜度：最壞與平均皆保證為 $O(n \log n)$。
-   * 空間複雜度：$O(n)$ (需額外陣列 `tmp`)。
+   * 空間複雜度： $O(n)$ (需額外陣列 `tmp`)。
 4. **Heap Sort:**
    * 時間複雜度：最壞與平均皆保證為 $O(n \log n)$。
-   * 空間複雜度：$O(1)$ (In-place)。
+   * 空間複雜度： $O(1)$ (In-place)。
 5. **Composite Sort:**
    * 時間複雜度：最壞與平均皆為 $O(n \log n)$，但常數時間小於純粹的 Merge Sort。
-   * 空間複雜度：$O(n)$ (需額外陣列 `tmp`)。
+   * 空間複雜度： $O(n)$ (需額外陣列 `tmp`)。
 
 ### 測試案例
 
@@ -282,6 +282,7 @@ int main(){
 <img width="1751" height="831" alt="image" src="https://github.com/user-attachments/assets/eaba2fb6-d5ae-433d-b1c5-d600fac821ab" />
 
 <img width="1745" height="830" alt="image" src="https://github.com/user-attachments/assets/08dcd625-f3a2-44df-8cea-ea80eda13c54" />
+
 #### 實際輸出 (執行時間表 ms)
 
 **Worst-case (ms)**
